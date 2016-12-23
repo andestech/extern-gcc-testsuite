@@ -23,6 +23,101 @@ gcc.c-torture/compile/951116-1.c
 gcc.c-torture/compile/nested-1.c
 gcc.c-torture/compile/nested-2.c
 gcc.c-torture/compile/pr21728.c
+gcc.c-torture/compile/20040317-3.c
+gcc.c-torture/compile/pr35006.c
+gcc.c-torture/execute/20010209-1.c
+gcc.c-torture/execute/20030501-1.c
+gcc.c-torture/execute/20040520-1.c
+gcc.c-torture/execute/20061220-1.c
+gcc.c-torture/execute/20090219-1.c
+gcc.c-torture/execute/920612-2.c
+gcc.c-torture/execute/921017-1.c
+gcc.c-torture/execute/nest-align-1.c
+gcc.c-torture/execute/nest-stdar-1.c
+gcc.c-torture/execute/nestfunc-7.c
+gcc.c-torture/execute/pr22061-3.c
+gcc.c-torture/execute/pr22061-4.c
+gcc.c-torture/execute/pr51447.c
+gcc.dg/debug/debug-3.c
+gcc.dg/debug/debug-4.c
+gcc.dg/debug/debug-5.c
+gcc.dg/debug/pr16676.c
+gcc.dg/debug/dwarf2/pr37726.c
+gcc.dg/20011130-1.c
+gcc.dg/20030331-2.c
+gcc.dg/20031218-2.c
+gcc.dg/20031218-3.c
+gcc.dg/20050607-1.c
+gcc.dg/cleanup-7.c
+gcc.dg/inline-28.c
+gcc.dg/inline-29.c
+gcc.dg/inline-30.c
+gcc.dg/nested-func-10.c
+gcc.dg/nested-func-5.c
+gcc.dg/nested-func-7.c
+gcc.dg/nested-func-8.c
+gcc.dg/nested-func-9.c
+gcc.dg/non-local-goto-1.c
+gcc.dg/non-local-goto-2.c
+gcc.dg/pr18963-1.c
+gcc.dg/pr23547.c
+gcc.dg/pr30045.c
+gcc.dg/pr49994-1.c
+gcc.dg/pr59011.c
+gcc.dg/pr59920-3.c
+gcc.dg/gomp/nestedfn-1.c
+gcc.dg/gomp/pr66633-1.c
+gcc.dg/gomp/pr66633-3.c
+gcc.dg/lto/pr55703_0.c
+gcc.dg/lto/pr59323-2_0.c
+gcc.dg/lto/pr59323_0.c
+gcc.dg/torture/nested-fn-1.c
+gcc.dg/torture/pr57036-2.c
+gcc.dg/torture/pr8081.c
+gcc.dg/torture/stackalign/nested-1.c
+gcc.dg/torture/stackalign/nested-2.c
+gcc.dg/torture/stackalign/nested-3.c
+gcc.dg/torture/stackalign/nested-4.c
+gcc.dg/torture/stackalign/non-local-goto-1.c
+gcc.dg/torture/stackalign/non-local-goto-2.c
+
+# Not support dynamic array size
+# fields must have a constant size: 
+# 'variable length array in structure' extension will never be supported
+gcc.c-torture/compile/pr39394.c
+gcc.c-torture/compile/pr42956.c
+gcc.c-torture/execute/20020412-1.c
+gcc.c-torture/execute/20040308-1.c
+gcc.c-torture/execute/20040423-1.c
+gcc.c-torture/execute/20041218-2.c
+gcc.c-torture/execute/20070919-1.c
+gcc.c-torture/execute/align-nest.c
+gcc.c-torture/execute/pr41935.c
+gcc.dg/debug/pr33316.c
+gcc.dg/debug/pr39412.c
+gcc.dg/20050527-1.c
+gcc.dg/packed-vla.c
+gcc.dg/pr19345.c
+gcc.dg/pr27301.c
+gcc.dg/pr30189.c
+gcc.dg/pr33238.c
+gcc.dg/pr47766.c
+gcc.dg/pr51990-2.c
+gcc.dg/vla-2.c
+gcc.dg/vla-22.c
+gcc.dg/lto/20090706-1_0.c
+gcc.dg/torture/pr48953.c
+
+# Not support atomic load operations
+gcc.c-torture/compile/20061005-1.c
+
+# error: redefinition of a 'extern inline' function 'foo' is not supported in C99 mode
+gcc.c-torture/compile/20011119-1.c
+gcc.c-torture/compile/20011119-2.c
+
+# error: non-void function 'foo' should return a value
+gcc.c-torture/compile/20020418-1.c
+gcc.c-torture/compile/20020927-1.c
 
 # error: fields must have a constant size: 'variable length array in structure' extension will never be supported
 gcc.c-torture/compile/20020210-1.c
@@ -53,9 +148,80 @@ gcc.c-torture/compile/950919-1.c
 # error: 'asm goto' constructs are not supported yet
 gcc.c-torture/compile/asmgoto-1.c
 
-# error: cannot compile this builtin function yet
-# __builtin_bcopy
+# error: clang unsupport builtin functions
+# probably we could check could we add them later ?
+gcc.c-torture/compile/20071117-1.c
+gcc.c-torture/compile/20071214-1.c
 gcc.c-torture/compile/bcopy-1.c
+gcc.c-torture/execute/builtins/abs-3.c
+gcc.c-torture/execute/builtins/fprintf.c
+gcc.c-torture/execute/builtins/fputs.c
+gcc.c-torture/execute/builtins/memcpy-chk.c
+gcc.c-torture/execute/builtins/memmove-chk.c
+gcc.c-torture/execute/builtins/memmove.c
+gcc.c-torture/execute/builtins/mempcpy-chk.c
+gcc.c-torture/execute/builtins/memset-chk.c
+gcc.c-torture/execute/builtins/lib/chk.c
+gcc.c-torture/execute/builtins/printf.c
+gcc.c-torture/execute/builtins/snprintf-chk.c
+gcc.c-torture/execute/builtins/sprintf-chk.c
+gcc.c-torture/execute/builtins/stpcpy-chk.c
+gcc.c-torture/execute/builtins/stpncpy-chk.c
+gcc.c-torture/execute/builtins/strcat-chk.c
+gcc.c-torture/execute/builtins/strcpy-chk.c
+gcc.c-torture/execute/builtins/strncat-chk.c
+gcc.c-torture/execute/builtins/strncpy-chk.c
+gcc.c-torture/execute/builtins/vsnprintf-chk.c
+gcc.c-torture/execute/builtins/vsprintf-chk.c
+gcc.c-torture/execute/20071018-1.c
+gcc.c-torture/execute/20071120-1.c
+gcc.c-torture/execute/builtin-bitops-1.c
+gcc.c-torture/execute/pr36765.c
+gcc.c-torture/execute/pr39228.c
+gcc.c-torture/execute/pr43008.c
+gcc.c-torture/execute/pr47237.c
+gcc.dg/builtins-57.c
+gcc.dg/pr28796-1.c
+gcc.dg/pr28796-2.c
+gcc.dg/webizer.c
+gcc.dg/torture/builtin-attr-1.c
+gcc.dg/torture/builtin-frexp-1.c
+gcc.dg/torture/builtin-ldexp-1.c
+gcc.dg/torture/builtin-math-3.c
+gcc.dg/torture/builtin-math-4.c
+gcc.dg/torture/builtin-math-6.c
+gcc.dg/builtin-apply3.c
+gcc.dg/builtin-apply4.c
+gcc.dg/builtin-return-1.c
+gcc.dg/torture/builtin-minmax-1.c
+gcc.dg/torture/builtin-modf-1.c
+gcc.dg/torture/builtin-rounding-1.c
+gcc.dg/torture/pr53272-2.c
+gcc.dg/torture/pr53908.c
+gcc.dg/torture/pr57147-2.c
+gcc.dg/torture/type-generic-1.c
+gcc.dg/torture/stackalign/builtin-apply-3.c
+gcc.dg/torture/stackalign/builtin-apply-4.c
+gcc.dg/tree-ssa/ssa-dce-7.c
+gcc.dg/tree-ssa/ssa-dom-thread-8.c
+
+# clang will show error: indirect goto in function with no address-of-label expressions
+gcc.c-torture/compile/920831-1.c
+gcc.c-torture/compile/pr30984.c
+gcc.c-torture/compile/pr58164.c
+gcc.c-torture/execute/920415-1.c
+gcc.c-torture/execute/920721-4.c
+gcc.c-torture/compile/920831-1.c
+gcc.c-torture/compile/pr30984.c
+gcc.c-torture/compile/pr58164.c
+gcc.c-torture/execute/920415-1.c
+gcc.dg/lto/pr55703_0.c # <= this case filter.py can't filter it out
+
+# invalid input constraint for inline assembly
+gcc.c-torture/compile/pr27528.c
+gcc.dg/ipa/ipa-sra-10.c
+gcc.dg/torture/pr67794.c
+gcc.dg/torture/stackalign/builtin-return-1.c
 
 # error: second parameter of 'main' (argument array) must be of type 'char **'
 gcc.c-torture/compile/call.c
