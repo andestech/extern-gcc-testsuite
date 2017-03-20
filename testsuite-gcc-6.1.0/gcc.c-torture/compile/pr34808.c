@@ -1,6 +1,4 @@
 /* PR 34808 */
-/* { dg-do compile }
-/* { dg-options "-fno-tree-dominator-opts" } */
 
 extern int flags;
 
