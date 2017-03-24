@@ -147,6 +147,20 @@ gcc.c-torture/compile/950919-1.c
 
 # error: 'asm goto' constructs are not supported yet
 gcc.c-torture/compile/asmgoto-1.c
+gcc.c-torture/compile/pr51767.c
+gcc.c-torture/compile/pr63282.c
+gcc.dg/54455.c
+gcc.dg/Woverlength-strings-pedantic-c89-asm.c
+gcc.dg/Woverlength-strings-pedantic-c90-asm.c
+gcc.dg/Woverlength-strings-pedantic-c99-asm.c
+gcc.dg/pr65980.c
+c-c++-common/asmgoto-3.c
+c-c++-common/asmgoto-4.c
+gcc.dg/torture/pr46068.c
+gcc.dg/torture/pr53589.c
+gcc.dg/torture/pr54127.c
+gcc.dg/torture/pr61772.c
+gcc.dg/tree-ssa/asmgoto-1.c
 
 # error: clang unsupport builtin functions
 # probably we could check could we add them later ?
@@ -250,3 +264,12 @@ gcc.dg/setjmp-4.c
 gcc.dg/torture/stackalign/setjmp-1.c
 gcc.dg/torture/stackalign/setjmp-3.c
 gcc.dg/torture/stackalign/setjmp-4.c
+
+# The test case use to checking frontend error message
+# skip it
+gcc.c-torture/compile/pr48767.c
+
+# error :
+#       assigning to 'V' (vector of 32 'signed char' values) from incompatible type 'int'
+# arm clang will fail too.
+gcc.c-torture/compile/pr52750.c
