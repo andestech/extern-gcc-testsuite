@@ -29,8 +29,8 @@ if ![check_effective_target_fopenmp] {
 dg-init
 
 # Main loop.
-gfortran-dg-runtest [lsort \
-       [find $srcdir/$subdir *.\[fF\]{,90,95,03,08} ] ] "" "-fopenmp -Wno-hsa"
+#gfortran-dg-runtest [lsort \
+#       [find $srcdir/$subdir *.\[fF\]{,90,95,03,08} ] ] "" "-fopenmp -Wno-hsa"
 
 # All done.
 dg-finish
