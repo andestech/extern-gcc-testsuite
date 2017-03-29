@@ -304,3 +304,13 @@ gcc.dg/pr34457-1.c
 gcc.dg/pr34668-1.c
 gcc.dg/pr43557-1.c
 gcc.dg/ipa/pr48195.c
+
+# clang will expect :
+# first parameter of 'main' (argument count) must be of type 'int'
+# second parameter of 'main' (argument array) must be of type 'char **
+gcc.c-torture/compile/v.c
+gcc.dg/tree-ssa/loadpre22.c
+gcc.dg/tree-ssa/loadpre18.c
+gcc.dg/tree-ssa/loadpre2.c
+gcc.dg/tree-ssa/loadpre21.c
+gcc.dg/tree-ssa/loadpre4.c
