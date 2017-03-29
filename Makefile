@@ -8,15 +8,29 @@ export PATH
 
 
 clean:
-	rm -rf gcc.log gcc.sum *.bc *.s
+	rm -rf gcc.log gcc.sum *.bc *.s gcc
 echo:
 	echo $(PATH)
 
-exe: clean
-	runtest --tool gcc $(RUNTESTFLAGS) execute.exp
+site.exp: gen-site-exp.py
+	python2 ./gen-site-exp.py
 
-all: clean
-	runtest --tool gcc $(RUNTESTFLAGS)
+exe: clean site.exp
+	mkdir -p gcc
+	ln -s ../site.exp gcc/site.exp
+	cd gcc && runtest --tool gcc $(RUNTESTFLAGS) execute.exp
+
+parallel.mak: gen-parallel-test-rule
+	python2 ./gen-parallel-test-rule testsuite-gcc-6.1.0 gcc > parallel.mak
+
+all-parallel: clean site.exp parallel.mak
+	$(MAKE) do-parallel-test
+
+all: clean site.exp
+	mkdir -p gcc
+	cd gcc && runtest --tool gcc $(RUNTESTFLAGS)
 
 filter:
 	python2 ./filter.py
+
+-include parallel.mak

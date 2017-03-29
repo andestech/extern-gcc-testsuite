@@ -1,3 +1,4 @@
+#! /usr/bin/env python2
 import re
 
 def read_ignore_list(ignore_list_path):
