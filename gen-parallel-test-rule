@@ -29,7 +29,7 @@ for lang in langs:
             if file.endswith(".exp"):
                 exps.add(file)
     print "do-%s-test: %s\n" % (lang, " ".join(map(lambda a: "%s/%s.log" % (a, lang), exps)))
-    print "\t-cd %s && python2 ../dg-extract-results.py *.exp/%s.log > %s.log" % (lang, lang, lang)
+    print "\t-cd %s && python2 ../dg-extract-results.py -L *.exp/%s.log > %s.log" % (lang, lang, lang)
     print "\t-cd %s && python2 ../dg-extract-results.py *.exp/%s.sum > %s.sum" % (lang, lang, lang)
 
     for exp in exps:
