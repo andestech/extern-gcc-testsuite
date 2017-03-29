@@ -273,3 +273,22 @@ gcc.c-torture/compile/pr48767.c
 #       assigning to 'V' (vector of 32 'signed char' values) from incompatible type 'int'
 # arm clang will fail too.
 gcc.c-torture/compile/pr52750.c
+
+# error: the clang compiler does not support '-traditional-cpp
+# clang not fully support -traditional-cpp
+gcc.dg/cpp/tr-paste.c
+gcc.dg/cpp/trad/assert1.c
+gcc.dg/cpp/trad/assert3.c
+gcc.dg/cpp/trad/funlike-4.c
+gcc.dg/cpp/trad/maccom3.c
+gcc.dg/cpp/trad/maccom4.c
+gcc.dg/cpp/trad/mi2.c
+gcc.dg/cpp/trad/mi3.c
+gcc.dg/cpp/trad/mi6.c
+gcc.dg/cpp/trad/paste.c
+gcc.dg/cpp/trad/pr65238-3.c
+gcc.dg/cpp/trad/strify.c
+gcc.dg/bitfld-9.c
+gcc.dg/cpp/trad/builtins.c
+gcc.dg/cpp/trad/literals-1.c
+gcc.dg/cpp/trad/macroargs.c
