@@ -80,6 +80,7 @@ gcc.dg/torture/stackalign/nested-3.c
 gcc.dg/torture/stackalign/nested-4.c
 gcc.dg/torture/stackalign/non-local-goto-1.c
 gcc.dg/torture/stackalign/non-local-goto-2.c
+gcc.c-torture/execute/20010605-1.c
 
 # Not support dynamic array size
 # fields must have a constant size: 
@@ -314,3 +315,9 @@ gcc.dg/tree-ssa/loadpre18.c
 gcc.dg/tree-ssa/loadpre2.c
 gcc.dg/tree-ssa/loadpre21.c
 gcc.dg/tree-ssa/loadpre4.c
+
+# some flexible array feature not support by clang
+gcc.dg/Wc90-c99-compat-4.c
+gcc.dg/Wc90-c99-compat-5.c
+gcc.dg/pr56078.c
+gcc.c-torture/execute/pr28865.c
