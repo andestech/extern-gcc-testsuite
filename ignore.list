@@ -321,3 +321,23 @@ gcc.dg/Wc90-c99-compat-4.c
 gcc.dg/Wc90-c99-compat-5.c
 gcc.dg/pr56078.c
 gcc.c-torture/execute/pr28865.c
+
+# cannot convert between vector values of different size
+gcc.c-torture/execute/scal-to-vec1.c
+gcc.c-torture/execute/scal-to-vec2.c
+gcc.c-torture/execute/scal-to-vec3.c
+gcc.dg/pr53060.c
+gcc.dg/pr55027.c
+gcc.dg/pr57233.c
+gcc.dg/pr57286.c
+gcc.dg/pr59261.c
+gcc.dg/pr70405.c
+gcc.dg/vec-andxor1.c
+c-c++-common/scal-to-vec2.c
+c-c++-common/vector-scalar-2.c
+c-c++-common/vector-scalar.c
+gcc.dg/torture/pr69886.c
+gcc.dg/torture/pr70083.c
+gcc.dg/torture/pr70307.c
+gcc.dg/fold-minus-1.c
+gcc.dg/tree-ssa/forwprop-27.c
