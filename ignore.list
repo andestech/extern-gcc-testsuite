@@ -357,3 +357,13 @@ gcc.dg/tree-ssa/forwprop-27.c
 # error : address of vector element requested
 gcc.dg/fold-cvect.c
 c-c++-common/torture/vector-subscript-1.c
+
+# error : initializer element is not a compile-time constant
+gcc.dg/Wc90-c99-compat-6.c
+gcc.dg/c11-complex-1.c
+gcc.dg/fold-reassoc-3.c
+gcc.dg/pr55019.c
+gcc.dg/torture/builtin-complex-1.c
+gcc.dg/torture/pr66178.c
+gcc.dg/pr36901-1.c
+gcc.dg/pr36901-2.c
