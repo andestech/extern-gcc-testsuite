@@ -353,3 +353,7 @@ gcc.dg/torture/pr70083.c
 gcc.dg/torture/pr70307.c
 gcc.dg/fold-minus-1.c
 gcc.dg/tree-ssa/forwprop-27.c
+
+# error : address of vector element requested
+gcc.dg/fold-cvect.c
+c-c++-common/torture/vector-subscript-1.c
