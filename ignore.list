@@ -315,6 +315,18 @@ gcc.dg/tree-ssa/loadpre18.c
 gcc.dg/tree-ssa/loadpre2.c
 gcc.dg/tree-ssa/loadpre21.c
 gcc.dg/tree-ssa/loadpre4.c
+gcc.dg/ipa/iinline-2.c
+gcc.dg/ipa/ipcp-ii-1.c
+gcc.dg/ipa/remref-2a.c
+gcc.dg/ipa/remref-2b.c
+gcc.dg/tree-ssa/pr59597.c
+gcc.dg/tree-ssa/reassoc-10.c
+gcc.dg/tree-ssa/reassoc-11.c
+gcc.dg/tree-ssa/reassoc-3.c
+gcc.dg/tree-ssa/reassoc-5.c
+gcc.dg/tree-ssa/reassoc-6.c
+gcc.dg/tree-ssa/reassoc-8.c
+gcc.dg/tree-ssa/reassoc-9.c
 
 # some flexible array feature not support by clang
 gcc.dg/Wc90-c99-compat-4.c
