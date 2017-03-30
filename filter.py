@@ -66,7 +66,7 @@ def read(sum_path, log_path):
   find_count = 0
   not_found_count = 0
   start_index = 0
-  log_data_len = log_data
+  log_data_len = len(log_data)
   with open(log_path + ".filtered", "w") as f:
     for result in sum_data:
       # Find the result in where
@@ -81,8 +81,8 @@ def read(sum_path, log_path):
           break
         idx = idx + 1
       else:
-        raise Expception("Not found match entry in log(%s not match %s?)" \
-                         % (log_path, sum_path))
+        raise Exception("Not found match entry `%s` in log(%s not match %s?)" \
+                         % (result, log_path, sum_path))
 
   fail_count, fail_case_count = count_case("FAIL:", sum_data)
   xpass_count, xpass_case_count = count_case("XPASS:", sum_data)
