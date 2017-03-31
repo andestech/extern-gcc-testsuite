@@ -305,7 +305,6 @@ gcc.dg/pr34457-1.c
 gcc.dg/pr34668-1.c
 gcc.dg/pr43557-1.c
 gcc.dg/ipa/pr48195.c
-
 # clang will expect :
 # first parameter of 'main' (argument count) must be of type 'int'
 # second parameter of 'main' (argument array) must be of type 'char **
