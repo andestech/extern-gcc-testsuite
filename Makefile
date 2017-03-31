@@ -31,6 +31,8 @@ all: clean site.exp
 	cd gcc && runtest --tool gcc $(RUNTESTFLAGS)
 
 filter:
+	rm *.filtered
+	cp gcc/gcc.* .
 	python2 ./filter.py
 
 -include parallel.mak
