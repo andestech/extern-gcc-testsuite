@@ -414,3 +414,6 @@ tree-ssa/ssa-dom-thread-9.c
 gcc.dg/Wc90-c99-compat-7.c
 gcc.dg/gnu90-const-expr-1.c
 c-c++-common/Wshift-overflow-4.c
+
+# clang warning message different with gcc
+gcc.dg/special/20000419-2.c
