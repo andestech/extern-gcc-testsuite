@@ -35,4 +35,7 @@ filter:
 	cp gcc/gcc.* .
 	python2 ./filter.py
 
+single-test:
+	runtest --tool gcc $(RUNTESTFLAGS) $(EXP)="$(TEST)"
+
 -include parallel.mak
