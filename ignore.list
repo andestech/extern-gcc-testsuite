@@ -417,3 +417,11 @@ c-c++-common/Wshift-overflow-4.c
 
 # clang warning message different with gcc
 gcc.dg/special/20000419-2.c
+
+# Not support __mulodi3/__muloti3 library functions
+# LLVM ARM/MIPS backend will have same result
+c-c++-common/torture/builtin-arith-overflow-3.c
+c-c++-common/torture/builtin-arith-overflow-12.c
+c-c++-common/torture/builtin-arith-overflow-13.c
+c-c++-common/torture/builtin-arith-overflow-14.c
+c-c++-common/torture/builtin-arith-overflow-18.c
