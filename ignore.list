@@ -430,3 +430,12 @@ c-c++-common/torture/builtin-arith-overflow-18.c
 # LLVM can't do it now. Perhaps, we could study the optimization
 # and make it work for LLVM.
 gcc.c-torture/execute/20021127-1.c
+
+# LLVM will transfer (int)2147483648.0f to 0 and when INT_MAX = 2147483647.
+# GCC will transfer (int)2147483648.0f to 2147483647.
+# According to C99 6.3.1.4
+# If the value of the integral part cannot be represented
+# by the integer type, the behavior is undefined.
+# So I guess the LLVM result is OK.
+# Correct the message if I just mis-understanding something.
+gcc.c-torture/execute/20031003-1.c
