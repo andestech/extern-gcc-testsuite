@@ -425,3 +425,8 @@ c-c++-common/torture/builtin-arith-overflow-12.c
 c-c++-common/torture/builtin-arith-overflow-13.c
 c-c++-common/torture/builtin-arith-overflow-14.c
 c-c++-common/torture/builtin-arith-overflow-18.c
+
+# GCC will expect the function call llabs could transfer to other instructions.
+# LLVM can't do it now. Perhaps, we could study the optimization
+# and make it work for LLVM.
+gcc.c-torture/execute/20021127-1.c
