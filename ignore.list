@@ -449,3 +449,7 @@ gcc.c-torture/execute/990208-1.c
 
 # It seems that LLVM not support __attribute__((optimize .) attribute
 gcc.c-torture/execute/alias-1.c
+
+# LLVM default BIGGEST_ALIGNMENT > STACK_BOUNDARY
+# so the test case would fail
+gcc.c-torture/execute/alloca-1.c
