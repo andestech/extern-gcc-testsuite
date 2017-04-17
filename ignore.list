@@ -458,3 +458,9 @@ gcc.c-torture/execute/alloca-1.c
 # GCC could optimize opt0/opt1 return 1 directly.
 # check it later
 gcc.c-torture/execute/bcp-1.c
+
+# ignore the case due to LLVM could not determine __builtin_constant_p(x)
+# at compile time in this case.
+# __builtin_constant_p (x) will return 1 if x could determine as constant at compile time.
+# It's an optimization regression test, check it later.
+gcc.c-torture/execute/builtin-constant.c
