@@ -475,3 +475,13 @@ gcc.c-torture/execute/float-floor.c
 # I think it's ok to ignore the test case.
 # The test case fail due to different implementation for -O0 between gcc and llvm.
 gcc.c-torture/execute/medce-1.c
+
+# GCC will optimize away __fprintf_chk by fwrite
+# LLVM won't do it
+gcc.c-torture/execute/fprintf-chk-1.c
+# GCC will optimize away some function call by puthchar
+# LLVM won't do it
+gcc.c-torture/execute/printf-chk-1.c
+# GCC will optimize away some function call by putc
+# LLVM won't do it
+gcc.c-torture/execute/vfprintf-chk-1.c
