@@ -464,3 +464,8 @@ gcc.c-torture/execute/bcp-1.c
 # __builtin_constant_p (x) will return 1 if x could determine as constant at compile time.
 # It's an optimization regression test, check it later.
 gcc.c-torture/execute/builtin-constant.c
+
+# It's a generic code bug and should fix on the maintrunk
+# reopen the case when we update the code base.
+# http://lists.llvm.org/pipermail/llvm-dev/2017-March/111240.html
+gcc.c-torture/execute/float-floor.c
