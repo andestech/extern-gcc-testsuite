@@ -469,3 +469,9 @@ gcc.c-torture/execute/builtin-constant.c
 # reopen the case when we update the code base.
 # http://lists.llvm.org/pipermail/llvm-dev/2017-March/111240.html
 gcc.c-torture/execute/float-floor.c
+
+# It's an optimization regression test that gcc could optimize away link_error
+# even in -O0 but llvm won't.
+# I think it's ok to ignore the test case.
+# The test case fail due to different implementation for -O0 between gcc and llvm.
+gcc.c-torture/execute/medce-1.c
