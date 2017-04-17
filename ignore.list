@@ -446,3 +446,6 @@ gcc.c-torture/execute/20031003-1.c
 # Probably also due to different implementation for label value(Should the
 # function contain Label value access inline ?)
 gcc.c-torture/execute/990208-1.c
+
+# It seems that LLVM not support __attribute__((optimize .) attribute
+gcc.c-torture/execute/alias-1.c
