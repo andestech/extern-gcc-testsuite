@@ -485,3 +485,6 @@ gcc.c-torture/execute/printf-chk-1.c
 # GCC will optimize away some function call by putc
 # LLVM won't do it
 gcc.c-torture/execute/vfprintf-chk-1.c
+
+# The test case compile fail due to llvm have different inline behavior with gcc.
+gcc.c-torture/execute/va-arg-pack-1.c
