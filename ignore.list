@@ -453,3 +453,8 @@ gcc.c-torture/execute/alias-1.c
 # LLVM default BIGGEST_ALIGNMENT > STACK_BOUNDARY
 # so the test case would fail
 gcc.c-torture/execute/alloca-1.c
+
+# LLVM fail due to different optimization behavior
+# GCC could optimize opt0/opt1 return 1 directly.
+# check it later
+gcc.c-torture/execute/bcp-1.c
