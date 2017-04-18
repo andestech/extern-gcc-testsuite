@@ -8,7 +8,7 @@ export PATH
 
 
 clean:
-	rm -rf gcc.log gcc.sum *.bc *.s gcc
+	rm -rf gcc.log gcc.sum *.bc *.s gcc *.filtered
 echo:
 	echo $(PATH)
 
@@ -25,14 +25,13 @@ parallel.mak: gen-parallel-test-rule
 
 all-parallel: clean site.exp parallel.mak
 	$(MAKE) do-parallel-test
+	cp gcc/gcc.* .
 
 all: clean site.exp
 	mkdir -p gcc
 	cd gcc && runtest --tool gcc $(RUNTESTFLAGS)
 
 filter:
-	rm *.filtered
-	cp gcc/gcc.* .
 	python2 ./filter.py
 
 single-test:
