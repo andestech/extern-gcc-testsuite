@@ -545,3 +545,6 @@ gcc.dg/torture/builtin-explog-1.c
 
 # llvm/clang would fail due to have different builtin function arugment passing rule
 gcc.dg/torture/builtin-logb-1.c
+
+# ignore the case that llvm/clang not support __builtin_parity for floating type
+gcc.dg/torture/builtin-nonneg-1.c
