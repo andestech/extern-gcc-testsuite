@@ -498,3 +498,15 @@ gcc.c-torture/execute/va-arg-pack-1.c
 # GCC expect v / {2, 2, 2, 2}, Clang will return v / {0, 0, 0, 2}
 # Does vector division have any spec to follow ?
 gcc.c-torture/execute/pr60960.c
+
+# It seems like a llvm generic code bug that
+# struct foo
+# {
+#   unsigned long long b:40;
+# } x;
+# x.b:40 initial as 0x0100 should carry out to 0 after (x.b<<32)
+# Reopen the testcases after maintrunk fix it.
+gcc.c-torture/execute/pr32244-1.c
+gcc.c-torture/execute/bitfld-3.c
+gcc.c-torture/execute/bitfld-5.c
+gcc.c-torture/execute/pr34971.c
