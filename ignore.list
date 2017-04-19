@@ -534,6 +534,7 @@ gcc.dg/torture/Wsizeof-pointer-memaccess1.c
 # but llvm can't do it now.
 gcc.dg/torture/builtin-cproj-1.c
 gcc.dg/torture/builtin-cproj-2.c
+gcc.dg/torture/builtin-isinf_sign-1.c
 
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
