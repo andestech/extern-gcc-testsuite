@@ -489,3 +489,12 @@ gcc.c-torture/execute/vprintf-chk-1.c
 
 # The test case compile fail due to llvm have different inline behavior with gcc.
 gcc.c-torture/execute/va-arg-pack-1.c
+
+# The test case fail due to clang have different behavior for vector division.
+# f1 (v4qi v)
+# {
+#   return v / 2;
+# }
+# GCC expect v / {2, 2, 2, 2}, Clang will return v / {0, 0, 0, 2}
+# Does vector division have any spec to follow ?
+gcc.c-torture/execute/pr60960.c
