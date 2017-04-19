@@ -510,3 +510,19 @@ gcc.c-torture/execute/pr32244-1.c
 gcc.c-torture/execute/bitfld-3.c
 gcc.c-torture/execute/bitfld-5.c
 gcc.c-torture/execute/pr34971.c
+
+# LLVM not support __builtin_shuffle for vector type
+c-c++-common/torture/vshuf-v16hi.c
+c-c++-common/torture/vshuf-v16qi.c
+c-c++-common/torture/vshuf-v2df.c
+c-c++-common/torture/vshuf-v2di.c
+c-c++-common/torture/vshuf-v2sf.c
+c-c++-common/torture/vshuf-v2si.c
+c-c++-common/torture/vshuf-v4df.c
+c-c++-common/torture/vshuf-v4di.c
+c-c++-common/torture/vshuf-v4hi.c
+c-c++-common/torture/vshuf-v4sf.c
+c-c++-common/torture/vshuf-v4si.c
+c-c++-common/torture/vshuf-v8hi.c
+c-c++-common/torture/vshuf-v8qi.c
+c-c++-common/torture/vshuf-v8si.c
