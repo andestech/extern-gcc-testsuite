@@ -538,6 +538,9 @@ gcc.dg/torture/builtin-isinf_sign-1.c
 gcc.dg/torture/builtin-math-1.c
 gcc.dg/torture/builtin-math-7.c
 gcc.dg/torture/builtin-math-8.c
+gcc.dg/torture/builtin-sin-mpfr-1.c
+gcc.dg/torture/builtin-sqrt-cmp-1.c
+gcc.dg/torture/builtin-symmetric-1.c
 
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
