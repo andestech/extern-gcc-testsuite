@@ -529,6 +529,7 @@ c-c++-common/torture/vshuf-v8si.c
 
 # ignore the test case due to llvm have different warning message
 gcc.dg/torture/Wsizeof-pointer-memaccess1.c
+gcc.dg/torture/pr25183.c
 
 # gcc expect link_error function call could optimize away,
 # but llvm can't do it now.
