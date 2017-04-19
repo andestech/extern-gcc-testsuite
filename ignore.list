@@ -539,3 +539,6 @@ gcc.dg/torture/builtin-isinf_sign-1.c
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
 gcc.dg/torture/builtin-explog-1.c
+
+# llvm/clang would fail due to have different builtin function arugment passing rule
+gcc.dg/torture/builtin-logb-1.c
