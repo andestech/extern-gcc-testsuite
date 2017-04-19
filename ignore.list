@@ -535,13 +535,17 @@ gcc.dg/torture/pr25183.c
 # but llvm can't do it now.
 gcc.dg/torture/builtin-cproj-1.c
 gcc.dg/torture/builtin-cproj-2.c
-gcc.dg/torture/builtin-isinf_sign-1.c
 gcc.dg/torture/builtin-math-1.c
 gcc.dg/torture/builtin-math-7.c
 gcc.dg/torture/builtin-math-8.c
-gcc.dg/torture/builtin-sin-mpfr-1.c
 gcc.dg/torture/builtin-sqrt-cmp-1.c
 gcc.dg/torture/builtin-symmetric-1.c
+
+# gcc can optimize out link_error in -O0
+# but llvm won't
+gcc.dg/torture/pr26898-1.c
+gcc.dg/torture/builtin-sin-mpfr-1.c
+gcc.dg/torture/builtin-isinf_sign-1.c
 
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
