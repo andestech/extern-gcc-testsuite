@@ -561,8 +561,9 @@ gcc.dg/torture/builtin-power-1.c
 # llvm/clang would fail due to have different builtin function arugment passing rule
 gcc.dg/torture/builtin-logb-1.c
 
-# ignore the case that llvm/clang not support __builtin_parity for floating type
+# ignore the case that llvm/clang not support some builtin argument type
 gcc.dg/torture/builtin-nonneg-1.c
+gcc.dg/torture/pr54261-1.c
 
 # gcc expect should warning but clang show error directly
 gcc.dg/torture/pr29119.c
