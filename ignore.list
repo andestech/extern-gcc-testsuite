@@ -540,6 +540,7 @@ gcc.dg/torture/builtin-math-7.c
 gcc.dg/torture/builtin-math-8.c
 gcc.dg/torture/builtin-sqrt-cmp-1.c
 gcc.dg/torture/builtin-symmetric-1.c
+gcc.dg/torture/pr27302-2.c
 
 # gcc can optimize out link_error in -O0
 # but llvm won't
