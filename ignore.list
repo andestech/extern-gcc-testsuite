@@ -578,3 +578,6 @@ gcc.dg/torture/pr42898.c
 # not the extern declaration one.
 gcc.dg/torture/pr55890-2.c
 gcc.dg/torture/pr55890-3.c
+
+# ignore the test case due to different error message
+gcc.dg/torture/pr60606-1.c
