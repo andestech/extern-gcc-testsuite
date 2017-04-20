@@ -219,6 +219,7 @@ gcc.dg/torture/stackalign/builtin-apply-3.c
 gcc.dg/torture/stackalign/builtin-apply-4.c
 gcc.dg/tree-ssa/ssa-dce-7.c
 gcc.dg/tree-ssa/ssa-dom-thread-8.c
+gcc.dg/torture/pr33560.c
 
 # clang will show error: indirect goto in function with no address-of-label expressions
 gcc.c-torture/compile/920831-1.c
