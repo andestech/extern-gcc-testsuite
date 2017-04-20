@@ -162,6 +162,8 @@ gcc.dg/torture/pr53589.c
 gcc.dg/torture/pr54127.c
 gcc.dg/torture/pr61772.c
 gcc.dg/tree-ssa/asmgoto-1.c
+gcc.dg/torture/pr51106-1.c
+gcc.dg/torture/pr51106-2.c
 
 # error: clang unsupport builtin functions
 # probably we could check could we add them later ?
