@@ -562,3 +562,7 @@ gcc.dg/torture/builtin-nonneg-1.c
 
 # gcc expect should warning but clang show error directly
 gcc.dg/torture/pr29119.c
+
+# skip the testcase will need scan gcc dump file
+gcc.dg/torture/pr42898-2.c
+gcc.dg/torture/pr42898.c
