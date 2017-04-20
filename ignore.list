@@ -582,3 +582,4 @@ gcc.dg/torture/pr55890-3.c
 
 # ignore the test case due to different error message
 gcc.dg/torture/pr60606-1.c
+gcc.dg/torture/pr67741.c
