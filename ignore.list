@@ -530,6 +530,29 @@ c-c++-common/torture/vshuf-v4si.c
 c-c++-common/torture/vshuf-v8hi.c
 c-c++-common/torture/vshuf-v8qi.c
 c-c++-common/torture/vshuf-v8si.c
+gcc.dg/torture/vector-shuffle1.c
+gcc.dg/torture/vshuf-v16hi.c
+gcc.dg/torture/vshuf-v16qi.c
+gcc.dg/torture/vshuf-v16sf.c
+gcc.dg/torture/vshuf-v16si.c
+gcc.dg/torture/vshuf-v2df.c
+gcc.dg/torture/vshuf-v2di.c
+gcc.dg/torture/vshuf-v2sf.c
+gcc.dg/torture/vshuf-v2si.c
+gcc.dg/torture/vshuf-v32hi.c
+gcc.dg/torture/vshuf-v32qi.c
+gcc.dg/torture/vshuf-v4df.c
+gcc.dg/torture/vshuf-v4di.c
+gcc.dg/torture/vshuf-v4hi.c
+gcc.dg/torture/vshuf-v4sf.c
+gcc.dg/torture/vshuf-v4si.c
+gcc.dg/torture/vshuf-v64qi.c
+gcc.dg/torture/vshuf-v8df.c
+gcc.dg/torture/vshuf-v8di.c
+gcc.dg/torture/vshuf-v8hi.c
+gcc.dg/torture/vshuf-v8qi.c
+gcc.dg/torture/vshuf-v8sf.c
+gcc.dg/torture/vshuf-v8si.c
 
 # ignore the test case due to llvm have different warning message
 gcc.dg/torture/Wsizeof-pointer-memaccess1.c
