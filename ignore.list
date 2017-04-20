@@ -536,6 +536,7 @@ gcc.dg/torture/pr25183.c
 gcc.dg/special/20000419-2.c
 gcc.dg/torture/pr42363.c
 gcc.dg/torture/pr59891.c
+gcc.dg/torture/pr66945.c
 
 
 # gcc expect link_error function call could optimize away,
