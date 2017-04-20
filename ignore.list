@@ -607,3 +607,8 @@ gcc.dg/torture/pr55890-3.c
 # ignore the test case due to different error message
 gcc.dg/torture/pr60606-1.c
 gcc.dg/torture/pr67741.c
+
+# It seems that testcase fail when compile with -fstrict-aliasing
+# is pretty reasonable. Please correct the message if you have
+# other thought.
+gcc.dg/torture/pr69776-2.c
