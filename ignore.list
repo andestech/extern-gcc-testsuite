@@ -503,13 +503,16 @@ gcc.dg/torture/pr70123.c
 # Does vector division have any spec to follow ?
 gcc.c-torture/execute/pr60960.c
 
-# It seems like a llvm generic code bug that
+# It seems like a llvm have different result.
 # struct foo
 # {
 #   unsigned long long b:40;
 # } x;
-# x.b:40 initial as 0x0100 should carry out to 0 after (x.b<<32)
-# Reopen the testcases after maintrunk fix it.
+# GCC expect x.b:40 initial as 0x0100 should carry out to 0 after (x.b<<32)
+# (x.b << 32) will involve integer promotion.
+# However, the C standard didn't define the promotion rule
+# for the bit-field type width wider than int.
+# So the test case output should be the undefined behavior.
 gcc.c-torture/execute/pr32244-1.c
 gcc.c-torture/execute/bitfld-3.c
 gcc.c-torture/execute/bitfld-5.c
