@@ -473,12 +473,6 @@ gcc.c-torture/execute/builtin-constant.c
 # http://lists.llvm.org/pipermail/llvm-dev/2017-March/111240.html
 gcc.c-torture/execute/float-floor.c
 
-# It's an optimization regression test that gcc could optimize away link_error
-# even in -O0 but llvm won't.
-# I think it's ok to ignore the test case.
-# The test case fail due to different implementation for -O0 between gcc and llvm.
-gcc.c-torture/execute/medce-1.c
-
 # GCC will optimize away __fprintf_chk by fwrite
 # LLVM won't do it
 gcc.c-torture/execute/fprintf-chk-1.c
@@ -582,6 +576,8 @@ gcc.dg/torture/pr27302-2.c
 gcc.dg/torture/pr26898-1.c
 gcc.dg/torture/builtin-sin-mpfr-1.c
 gcc.dg/torture/builtin-isinf_sign-1.c
+gcc.dg/torture/pr27302.c
+gcc.c-torture/execute/medce-1.c
 
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
