@@ -226,6 +226,7 @@ gcc.dg/torture/pr52402.c
 gcc.dg/torture/pr53272-2.c
 gcc.dg/torture/pr56661.c
 gcc.dg/torture/pr53272-1.c
+gcc.dg/tree-ssa/alias-33.c
 
 # clang will show error: indirect goto in function with no address-of-label expressions
 gcc.c-torture/compile/920831-1.c
