@@ -642,3 +642,31 @@ gcc.dg/torture/builtin-wctype-1.c
 # ARM/MIPS would not trigger it because they have wider immediate limitation 
 # for load/store offset.
 # gcc.c-torture/compile/pr37669-2.c
+
+
+# Skip the testcases need scan gcc dump files
+gcc.dg/tree-ssa/asm-2.c
+gcc.dg/tree-ssa/asm-3.c
+gcc.dg/tree-ssa/forwprop-19.c
+gcc.dg/tree-ssa/forwprop-20.c
+gcc.dg/tree-ssa/forwprop-21.c
+gcc.dg/tree-ssa/forwprop-23.c
+gcc.dg/tree-ssa/inline-3.c
+gcc.dg/tree-ssa/loop-1.c
+gcc.dg/tree-ssa/ssa-ccp-20.c
+gcc.dg/tree-ssa/ssa-dse-10.c
+gcc.dg/tree-ssa/ssa-sccvn-4.c
+gcc.dg/tree-ssa/vector-4.c
+gcc.dg/tree-ssa/vrp12.c
+gcc.dg/tree-ssa/vrp13.c
+gcc.dg/tree-ssa/vrp45.c
+gcc.dg/tree-ssa/vrp51.c
+gcc.dg/tree-ssa/vrp63.c
+gcc.dg/tree-ssa/vrp65.c
+gcc.dg/tree-ssa/vrp68.c
+gcc.dg/tree-ssa/vrp69.c
+gcc.dg/tree-ssa/vrp76.c
+gcc.dg/tree-ssa/vrp78.c
+gcc.dg/tree-ssa/vrp80.c
+gcc.dg/tree-ssa/vrp85.c
+gcc.dg/tree-ssa/vrp90.c
