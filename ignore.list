@@ -619,3 +619,21 @@ gcc.dg/torture/pr69776-2.c
 # GCC expect link_failure_* could optimize out,
 # But LLVM can't do it now.
 gcc.dg/torture/builtin-wctype-1.c
+
+# fatal error: error in backend:
+# Error while trying to spill X5_32 from class GPR: 
+# Cannot scavenge register without an emergency spill slot!
+#
+# It will need a scavenge register if the offset is too far(exceed signed 12-bit)
+# from base register.
+# If there is no free register to use, LLVM will spill a register to stack.
+# However, if the stack location for spilling also exceed 12-bit which mean 
+# the spilling also need a scavenge register !!
+# It become a recursive requirement for scavenge register and would crash in the end.
+#
+# It seems like a LLVM limitation.
+# if we want stack location for scavenge register spilling not exceed 12-bits signed,
+# it would need to lot of work for frame code generation.
+# ARM/MIPS would not trigger it because they have wider immediate limitation 
+# for load/store offset.
+# gcc.c-torture/compile/pr37669-2.c
