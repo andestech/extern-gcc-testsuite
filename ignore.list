@@ -111,6 +111,12 @@ gcc.dg/torture/pr48953.c
 
 # Not support atomic load operations
 gcc.c-torture/compile/20061005-1.c
+gcc.dg/atomic-generic-aux.c
+gcc.dg/atomic-generic.c
+gcc.dg/atomic-lockfree-aux.c
+gcc.dg/atomic-lockfree.c
+gcc.dg/atomic-noinline-aux.c
+gcc.dg/atomic-noinline.c
 
 # error: redefinition of a 'extern inline' function 'foo' is not supported in C99 mode
 gcc.c-torture/compile/20011119-1.c
@@ -805,6 +811,9 @@ gcc.dg/torture/builtin-power-1.c
 
 # llvm/clang would fail due to have different builtin function arugment passing rule
 gcc.dg/torture/builtin-logb-1.c
+gcc.dg/builtin-assume-aligned-2.c
+gcc.dg/builtin-constant_p-1.c
+gcc.dg/builtins-68.c
 
 # ignore the case that llvm/clang not support some builtin argument type
 gcc.dg/torture/builtin-nonneg-1.c
@@ -812,6 +821,12 @@ gcc.dg/torture/pr54261-1.c
 
 # gcc expect should warning but clang show error directly
 gcc.dg/torture/pr29119.c
+gcc.dg/20041213-1.c
+gcc.dg/Wunsuffixed-float-constants-1.c
+gcc.dg/Wunused-local-typedefs.c
+gcc.dg/Wunused-var-1.c
+gcc.dg/Wunused-var-3.c
+gcc.dg/builtin-prefetch-1.c
 
 # skip the testcase will need scan gcc dump file
 gcc.dg/torture/pr42898-2.c
@@ -830,6 +845,11 @@ gcc.dg/torture/pr67741.c
 # is pretty reasonable. Please correct the message if you have
 # other thought.
 gcc.dg/torture/pr69776-2.c
+
+# ignore the testcase need -fkeep-static-functions option,
+# but llvm don't have. Please correct the message if you have
+# other thought.
+gcc.dg/PR68002.c
 
 # GCC expect link_failure_* could optimize out,
 # But LLVM can't do it now.
@@ -880,3 +900,4 @@ gcc.dg/tree-ssa/vrp78.c
 gcc.dg/tree-ssa/vrp80.c
 gcc.dg/tree-ssa/vrp85.c
 gcc.dg/tree-ssa/vrp90.c
+gcc.dg/builtin-assume-aligned-1.c
