@@ -522,6 +522,8 @@ gcc.dg/pr64417.c
 gcc.dg/pr64423.c
 gcc.dg/pr64766.c
 gcc.dg/pr64778.c
+gcc.dg/pr64417.c
+gcc.dg/va-arg-2.c
 
 # Test for spec
 gcc.dg/spec-options.c
@@ -553,6 +555,8 @@ gcc.dg/tree-ssa/asmgoto-1.c
 gcc.dg/torture/pr51106-1.c
 gcc.dg/torture/pr51106-2.c
 gcc.dg/pr61692.c
+c-c++-common/asmgoto-2.c
+c-c++-common/pr51768.c
 
 # error: clang unsupport builtin functions
 # probably we could check could we add them later ?
@@ -635,6 +639,13 @@ gcc.c-torture/compile/pr27528.c
 gcc.dg/ipa/ipa-sra-10.c
 gcc.dg/torture/pr67794.c
 gcc.dg/torture/stackalign/builtin-return-1.c
+gcc.dg/pr52355.c
+gcc.dg/pr57134.c
+gcc.dg/pr58805.c
+c-c++-common/pr67653.c
+
+# invalid instruction for inline assembly
+gcc.dg/asm-4.c
 
 # error: second parameter of 'main' (argument array) must be of type 'char **'
 gcc.c-torture/compile/call.c
@@ -668,10 +679,16 @@ gcc.dg/torture/stackalign/setjmp-4.c
 # skip it
 gcc.c-torture/compile/pr48767.c
 
+#Checking frontend to optimize pure function,
+#clang is not optimize.
+## LLVM ARM backend will have same result
+gcc.dg/20050121-2.c
+
 # error :
 #       assigning to 'V' (vector of 32 'signed char' values) from incompatible type 'int'
 # arm clang will fail too.
 gcc.c-torture/compile/pr52750.c
+gcc.dg/pr64252.c
 
 # error: the clang compiler does not support '-traditional-cpp
 # clang not fully support -traditional-cpp
@@ -750,6 +767,8 @@ gcc.dg/torture/pr70083.c
 gcc.dg/torture/pr70307.c
 gcc.dg/fold-minus-1.c
 gcc.dg/tree-ssa/forwprop-27.c
+gcc.dg/pr68134.c
+gcc.dg/simd-4.c
 
 # error : address of vector element requested
 gcc.dg/fold-cvect.c
@@ -796,6 +815,7 @@ gcc.dg/gnu99-const-expr-1.c
 gcc.dg/gnu99-const-expr-2.c
 gcc.dg/gnu99-init-2.c
 gcc.dg/gnu99-static-1.c
+c-c++-common/Wmemset-transposed-args2.c
 
 # ignore the testcase need gnu89 extension
 gcc.dg/20040203-1.c
@@ -807,6 +827,10 @@ gcc.dg/inline-6.c
 tree-ssa/20030731-1.c
 tree-ssa/ssa-ccp-2.c
 tree-ssa/ssa-dom-thread-9.c
+gcc.dg/inline-1.c
+gcc.dg/inline-24.c
+gcc.dg/memcpy-2.c
+gcc.dg/va-arg-pack-len-1.c
 
 # ignore the testcase need gnu90 extension
 gcc.dg/Wc90-c99-compat-7.c
@@ -1182,6 +1206,281 @@ gcc.dg/pr60351.c
 gcc.dg/pr61077.c
 gcc.dg/pr62294.c
 gcc.dg/pr64637.c
+gcc.dg/pr64423.c
+gcc.dg/pr64637.c
+gcc.dg/pr64709.c
+gcc.dg/pr65345-1.c
+gcc.dg/pr65345-3.c
+gcc.dg/pr65901.c
+gcc.dg/pr66066-1.c
+gcc.dg/pr67512.c
+gcc.dg/pr67854.c
+gcc.dg/pr68412.c
+gcc.dg/pr69156.c
+gcc.dg/pr69650.c
+gcc.dg/pr70747.c
+gcc.dg/pr8927-1.c
+gcc.dg/pragma-diag-1.c
+gcc.dg/pragma-diag-2.c
+gcc.dg/pragma-diag-3.c
+gcc.dg/pragma-diag-4.c
+gcc.dg/pragma-diag-5.c
+gcc.dg/pragma-message.c
+gcc.dg/pragma-pack-4.c
+gcc.dg/pragma-re-2.c
+gcc.dg/proto-1.c
+gcc.dg/qual-component-1.c
+gcc.dg/qual-return-1.c
+gcc.dg/qual-return-2.c
+gcc.dg/qual-return-3.c
+gcc.dg/qual-return-4.c
+gcc.dg/readonly-loc.c
+gcc.dg/redecl-15.c
+gcc.dg/return-type-1.c
+gcc.dg/return-type-3.c
+gcc.dg/sequence-pt-1.c
+gcc.dg/sequence-pt-2.c
+gcc.dg/sequence-pt-3.c
+gcc.dg/sequence-pt-pr17880.c
+gcc.dg/struct-semi-1.c
+gcc.dg/struct-semi-2.c
+gcc.dg/struct-semi-3.c
+gcc.dg/struct-semi-4.c
+gcc.dg/transparent-union-1.c
+gcc.dg/transparent-union-2.c
+gcc.dg/ucnid-10.c
+gcc.dg/ucnid-13.c
+gcc.dg/uninit-11-O0.c
+gcc.dg/uninit-11.c
+gcc.dg/uninit-15.c
+gcc.dg/uninit-19.c
+gcc.dg/vla-11.c
+gcc.dg/warn-nsstring.c
+gcc.dg/wcaselabel-1.c
+gcc.dg/winline-10.c
+gcc.dg/wvla-1.c
+gcc.dg/wvla-2.c
+gcc.dg/wvla-3.c
+gcc.dg/wvla-4.c
+gcc.dg/wvla-5.c
+gcc.dg/wvla-6.c
+gcc.dg/wvla-7.c
+c-c++-common/Waddress-1.c
+c-c++-common/Wcast-qual-1.c
+c-c++-common/Wconversion-real.c
+c-c++-common/Wfloat-conversion.c
+c-c++-common/Wint-to-pointer-cast-1.c
+c-c++-common/Wint-to-pointer-cast-2.c
+c-c++-common/Wparentheses-1.c
+c-c++-common/Wshift-count-negative-1.c
+c-c++-common/Wshift-count-overflow-1.c
+c-c++-common/Wshift-overflow-3.c
+c-c++-common/Wsizeof-pointer-memaccess2.c
+c-c++-common/Wtautological-compare-1.c
+c-c++-common/Wunused-local-typedefs.c
+c-c++-common/Wunused-var-1.c
+c-c++-common/Wunused-var-4.c
+c-c++-common/Wunused-var-7.c
+c-c++-common/Wunused-var-9.c
+c-c++-common/Wvarargs-2.c
+c-c++-common/Wvarargs.c
+c-c++-common/attr-used-2.c
+c-c++-common/attr-used.c
+c-c++-common/attributes-1.c
+c-c++-common/attributes-2.c
+c-c++-common/attributes-enum-1.c
+c-c++-common/attributes-enum-2.c
+c-c++-common/builtin-arith-overflow-1.c
+c-c++-common/pr43395.c
+c-c++-common/pr48418.c
+c-c++-common/pr49706.c
+c-c++-common/pr53874.c
+c-c++-common/pr56607.c
+c-c++-common/pr60439.c
+c-c++-common/pr61405.c
+c-c++-common/pr62199.c
+c-c++-common/pr65120.c
+c-c++-common/pr66208.c
+c-c++-common/pr66322.c
+c-c++-common/pr68582.c
+c-c++-common/pr69764.c
+c-c++-common/pr70264.c
+c-c++-common/raw-string-14.c
+c-c++-common/raw-string-16.c
+c-c++-common/raw-string-3.c
+c-c++-common/raw-string-4.c
+c-c++-common/raw-string-5.c
+c-c++-common/raw-string-6.c
+c-c++-common/raw-string-7.c
+c-c++-common/raw-string-8.c
+c-c++-common/raw-string-9.c
+c-c++-common/sizeof-array-argument.c
+c-c++-common/uninit-17.c
+c-c++-common/uninit-E-O0.c
+c-c++-common/uninit-E.c
+c-c++-common/uninit-F-O0.c
+c-c++-common/uninit-F.c
+gcc.dg/visibility-7.c
+gcc.dg/unused-5.c
+gcc.dg/c99-complit-2.c
+gcc.dg/c99-init-5.c
+gcc.dg/pr66869.c
+
+# ignore the test case due to different error message
+gcc.dg/torture/pr60606-1.c
+gcc.dg/torture/pr67741.c
+gcc.dg/pr64766.c
+gcc.dg/pr64778.c
+gcc.dg/pr65050.c
+gcc.dg/pr65228.c
+gcc.dg/pr66066-1.c
+gcc.dg/pr66066-2.c
+gcc.dg/pr66066-3.c
+gcc.dg/pr67088.c
+gcc.dg/pr67580.c
+gcc.dg/pr67784-2.c
+gcc.dg/pr67432.c
+gcc.dg/pr68090.c
+gcc.dg/pr68320.c
+gcc.dg/pr68533.c
+gcc.dg/pr69483.c
+gcc.dg/pr69554-1.c
+gcc.dg/pr69627.c
+gcc.dg/pr70281.c
+gcc.dg/pr69627.c
+gcc.dg/pr69796.c
+gcc.dg/pr69819.c
+gcc.dg/pr69974.c
+gcc.dg/pr8788-1.c
+gcc.dg/redecl-1.c
+gcc.dg/redecl-10.c
+gcc.dg/redecl-12.c
+gcc.dg/redecl-13.c
+gcc.dg/redecl-2.c
+gcc.dg/redecl-3.c
+gcc.dg/redecl-4.c
+gcc.dg/redecl-5.c
+gcc.dg/redecl-7.c
+gcc.dg/redecl-8.c
+gcc.dg/reg-vol-struct-1.c
+gcc.dg/register-var-2.c
+gcc.dg/register-var-3.c
+gcc.dg/simd-1.c
+gcc.dg/simd-1b.c
+gcc.dg/simd-2.c
+gcc.dg/sizeof-1.c
+gcc.dg/sizeof-2.c
+gcc.dg/spellcheck-fields.c
+gcc.dg/struct-in-proto-1.c
+gcc.dg/struct-incompl-1.c
+gcc.dg/struct-parse-1.c
+gcc.dg/struct-parse-2.c
+gcc.dg/switch-2.c
+gcc.dg/switch-3.c
+gcc.dg/switch-5.c
+gcc.dg/switch-8.c
+gcc.dg/switch-9.c
+gcc.dg/switch-A.c
+gcc.dg/sync-fetch-bool.c
+gcc.dg/sync-fetch.c
+gcc.dg/two-types-1.c
+gcc.dg/two-types-10.c
+gcc.dg/two-types-2.c
+gcc.dg/two-types-3.c
+gcc.dg/two-types-4.c
+gcc.dg/two-types-5.c
+gcc.dg/two-types-6.c
+gcc.dg/two-types-7.c
+gcc.dg/two-types-8.c
+gcc.dg/two-types-9.c
+gcc.dg/typedef-init.c
+gcc.dg/typespec-1.c
+gcc.dg/ucnid-7.c
+gcc.dg/ucnid-8.c
+gcc.dg/uninit-15-O0.c
+gcc.dg/uninit-6-O0.c
+gcc.dg/uninit-6.c
+gcc.dg/uninit-B-O0.c
+gcc.dg/uninit-B.c
+gcc.dg/uninit-pr19430-O0.c
+gcc.dg/uninit-pr19430.c
+gcc.dg/uninit-pr20644-O0.c
+gcc.dg/uninit-pr20644.c
+gcc.dg/uninit-pr40943.c
+gcc.dg/union-3.c
+gcc.dg/union-cast-4.c
+gcc.dg/unordered-1.c
+gcc.dg/unused-1.c
+gcc.dg/unused-2.c
+gcc.dg/unused-3.c
+gcc.dg/unused-4.c
+gcc.dg/unused-6-WallWextra.c
+gcc.dg/unused-6.c
+gcc.dg/unused-7.c
+gcc.dg/unused-8a.c
+gcc.dg/unused-8b.c
+gcc.dg/unused-variable-1.c
+gcc.dg/unused-variable-2.c
+gcc.dg/unused-variable-3.c
+gcc.dg/utf-array-short-wchar.c
+gcc.dg/utf-array.c
+gcc.dg/utf-badconcat.c
+gcc.dg/utf-badconcat2.c
+gcc.dg/utf-cvt.c
+gcc.dg/utf-dflt.c
+gcc.dg/utf-dflt2.c
+gcc.dg/utf16-4.c
+gcc.dg/utf32-4.c
+gcc.dg/utf8-2.c
+gcc.dg/va-arg-1.c
+gcc.dg/va-arg-4.c
+gcc.dg/vla-19.c
+gcc.dg/vla-20.c
+gcc.dg/vla-5.c
+gcc.dg/vla-6.c
+gcc.dg/vla-8.c
+gcc.dg/vla-init-1.c
+gcc.dg/vla-init-3.c
+gcc.dg/void-cast-2.c
+gcc.dg/wtr-func-def-1.c
+gcc.dg/wtr-int-type-1.c
+c-c++-common/builtin-offsetof.c
+c-c++-common/conflict-markers-1.c
+c-c++-common/conflict-markers-10.c
+c-c++-common/conflict-markers-11.c
+c-c++-common/conflict-markers-3.c
+c-c++-common/conflict-markers-4.c
+c-c++-common/conflict-markers-5.c
+c-c++-common/conflict-markers-6.c
+c-c++-common/convert-vec-1.c
+c-c++-common/fmax-errors.c
+c-c++-common/init-vec-1.c
+c-c++-common/pr20000.c
+c-c++-common/pr28656.c
+c-c++-common/pr33193.c
+c-c++-common/pr36282-1.c
+c-c++-common/pr43690.c
+c-c++-common/pr59280.c
+c-c++-common/pr60226.c
+c-c++-common/pr63764-1.c
+c-c++-common/pr67639.c
+c-c++-common/pr68107.c
+c-c++-common/pr68657-1.c
+c-c++-common/pr68833-1.c
+c-c++-common/pr69797.c
+c-c++-common/pr70144-1.c
+c-c++-common/pr70651.c
+c-c++-common/scal-to-vec1.c
+c-c++-common/vector-1.c
+c-c++-common/vector-2.c
+c-c++-common/vector-3.c
+c-c++-common/vector-compare-1.c
+c-c++-common/vector-shift.c
+c-c++-common/vector-shift1.c
+c-c++-common/vector-shift3.c
+c-c++-common/vector-subscript-1.c
+gcc.dg/asm-1.c
+gcc.dg/builtins-error.c
 
 # gcc expect link_error function call could optimize away,
 # but llvm can't do it now.
@@ -1241,15 +1540,12 @@ gcc.dg/c99-typespec-1.c
 # skip the testcase will need scan gcc dump file
 gcc.dg/torture/pr42898-2.c
 gcc.dg/torture/pr42898.c
+gcc.dg/pr30957-1.c
 
 # It seems that clang will try to find the builtin function prototype
 # not the extern declaration one.
 gcc.dg/torture/pr55890-2.c
 gcc.dg/torture/pr55890-3.c
-
-# ignore the test case due to different error message
-gcc.dg/torture/pr60606-1.c
-gcc.dg/torture/pr67741.c
 
 # It seems that testcase fail when compile with -fstrict-aliasing
 # is pretty reasonable. Please correct the message if you have
@@ -1312,6 +1608,9 @@ gcc.dg/tree-ssa/vrp85.c
 gcc.dg/tree-ssa/vrp90.c
 gcc.dg/builtin-assume-aligned-1.c
 gcc.dg/fold-perm.c
+gcc.dg/strlenopt-19.c
+gcc.dg/strlenopt-20.c
+gcc.dg/var-expand1.c
 
 # Skip the testcases need scan gcc's MD pattern
 gcc.dg/old-style-asm-1.c
@@ -1341,6 +1640,7 @@ gcc.dg/large-size-array-2.c
 gcc.dg/large-size-array-4.c
 gcc.dg/pr63594-2.c
 gcc.dg/20020425-1.c
+gcc.dg/vla-15.c
 
 #GNU decimal type extension not supported
 gcc.dg/nodfp-1.c
@@ -1360,8 +1660,158 @@ gcc.dg/no-math-errno-1.c
 gcc.dg/no-math-errno-2.c
 gcc.dg/no-math-errno-4.c
 
+#unknown type name 'int_least8_t', int_least16_t.
+#LLVM ARM has same result
+gcc.dg/c11-stdatomic-1.c
+gcc.dg/pr61756.c
+
 #unsupported option '--dump=a'
 gcc.dg/opts-4.c
 
 #the clang compiler does not support '-fno-unit-at-a-time'
 gcc.dg/pr33645-1.c
+
+#unknown warning group '-Wmaybe-uninitialized'
+gcc.dg/pr69543.c
+
+#unknown warning group '-Wnoexcept'
+gcc.dg/pragma-diag-6.c
+
+#not support -Wmissing-declarations option
+c-c++-common/Wmisleading-indentation-3.c
+c-c++-common/Wmisleading-indentation.c
+
+#Using -Wuninitialized, clang report warning, but gcc not.
+c-c++-common/uninit-D-O0.c
+c-c++-common/uninit-D.c
+
+#unknown warning option: -Wlarger-than=65536
+c-c++-common/pr68657-3.c
+
+#unknown warning option:-Wunknown-pragmas
+c-c++-common/pr69543-1.c
+c-c++-common/pr69543-2.c
+c-c++-common/pr69543-3.c
+c-c++-common/pr69543-4.c
+
+#Using -fdump-ada-spec to scan dump file,
+#but clang has not this option.
+c-c++-common/dump-ada-spec-1.c
+
+#clang can parser -finstrument-functions-exclude-function-list=xxx option,
+#but not work, this option maybe we can implement.
+gcc.dg/instrument-2.c
+gcc.dg/instrument-3.c
+
+#clang can parser -fplan9-extensions option, but not work.
+##LLVM ARM will have same result
+gcc.dg/anon-struct-12.c
+gcc.dg/anon-struct-13.c
+
+#GCC and clang '-ffast-math' is not the same.
+gcc.dg/builtins-10.c
+gcc.dg/builtins-11.c
+gcc.dg/builtins-18.c
+gcc.dg/builtins-19.c
+gcc.dg/builtins-20.c
+gcc.dg/builtins-26.c
+gcc.dg/builtins-27.c
+gcc.dg/builtins-52.c
+gcc.dg/builtins-54.c
+
+#builtin functions must be directly called
+#LLVM ARM will have same result
+c-c++-common/pr70144-2.c
+
+#Not allow increment/decrement value of type by vector_size.
+c-c++-common/pr59032.c
+
+#has not -ftree-ccp option, this option
+#using GCC optimize CCP on tree level.
+c-c++-common/pr52177.c
+
+#has not '-fallow-parameterless-variadic-functions' option
+gcc.dg/va-arg-5.c
+
+#Using '-fno-finite-math-only' option, optimzie in -O0,
+# but llvm won't
+gcc.dg/unordered-2.c
+gcc.dg/unordered-3.c
+
+#Could not read profile default.profdata,
+#GCC profile naming is XXX.gcda.
+gcc.dg/pr32773.c
+gcc.dg/pr40209.c
+gcc.dg/pr51957-1.c
+
+#unsupport of scalar_storage_order attribute
+gcc.dg/sso-2.c
+gcc.dg/sso-3.c
+gcc.dg/sso-5.c
+
+#clang show warning message, but GCC not.
+#The message is "too many arguments in call to 'xxx'".
+gcc.dg/pr44539.c
+gcc.dg/pr41241.c
+
+# llvm can optimize out in -O0, but GCC won't
+gcc.dg/pr24561.c
+gcc.dg/pr25795-1.c
+gcc.dg/pr27095.c
+
+#test gcc rtl-optimization for CSE of non-volatile inline asm
+gcc.dg/pr63637-5.c
+gcc.dg/pr63637-6.c
+
+#Unsupported need pthread_h, the GCC unsupport too.
+gcc.dg/split-2.c
+
+#undefine __SIG_ATOMIC_XXX__ marco,
+#ARM also undefine it.
+gcc.dg/c99-stdint-1.c
+gcc.dg/c99-stdint-5.c
+gcc.dg/c99-stdint-6.c
+gcc.dg/c99-stdint-7.c
+gcc.dg/c99-stdint-8.c
+
+#Unsupport '-fstrict-aliasing' option
+gcc.dg/localalias-2.c
+gcc.dg/localalias.c
+
+#It seems that LLVM not support __attribute__((no_reorder.) attribute
+gcc.dg/noreorder.c
+gcc.dg/noreorder2.c
+gcc.dg/noreorder4.c
+
+#Clang check zero vector size, but GCC not.
+gcc.dg/pr69973.c
+
+#clang can parser -fwhole-program option, but not work.
+gcc.dg/attr-externally-visible-1.c
+gcc.dg/attr-externally-visible-2.c
+
+#clang can parser -fstack-usage option, but not work.
+stack-usage-1.c
+
+#Test that nan functions are not built-in in C90 mode.
+gcc.dg/builtins-35.c
+
+#clang can parser -fleading-underscore option, but not work.
+gcc.dg/unwind-1.c
+
+#Test qualifier discard of typeof for atomic types.
+#LLVM ARM has same result.
+gcc.dg/typeof-2.c
+
+#clang show error message, but GCC not.
+#The message is "use of undeclared identifier".
+gcc.dg/ucnid-5.c
+
+#syntax error by static_assert, llvm report error,
+#but GCC can parser.
+gcc.dg/pr61817-1.c
+gcc.dg/pr61817-2.c
+gcc.dg/c11-static-assert-1.c
+
+#unspport -fheinous-gnu-extensions for gnu extension.
+gcc.dg/asm-a.c
