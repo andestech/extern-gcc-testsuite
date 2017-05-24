@@ -935,6 +935,7 @@ gcc.c-torture/execute/pr32244-1.c
 gcc.c-torture/execute/bitfld-3.c
 gcc.c-torture/execute/bitfld-5.c
 gcc.c-torture/execute/pr34971.c
+gcc.dg/torture/20110718-1.c
 
 # LLVM not support __builtin_shuffle for vector type
 c-c++-common/torture/vshuf-v16hi.c
@@ -1819,3 +1820,24 @@ gcc.dg/asm-a.c
 # skip for riscv64 which will show
 # array is too large (4611686018427387648 elements) frond end error message
 gcc.c-torture/execute/991014-1.c
+
+# skip for riscv64
+# which will show Unsupported XMULO
+# mips64 have the same result
+c-c++-common/torture/builtin-arith-overflow-17.c
+
+# skip for riscv64
+# which will show undefined reference to `__muloti4'
+c-c++-common/torture/builtin-arith-overflow-6.c
+
+# It seems that clang not support convert TImode integer to float
+# E.g.
+#     static volatile float fv1;
+#     fv1 = ((UTItype)~(UTItype)0);
+#     if (fv1 != ((UTItype)~(UTItype)0)) abort ();
+#
+# clang will show fv1 is undef and in the end optimize to call abort();
+# I can't find relative conversion rule in C99 standard,
+# so it probably undefined behavior.
+# Correct the message if you find relative rule or you have other thought.
+gcc.dg/torture/fp-int-convert-timode.c
