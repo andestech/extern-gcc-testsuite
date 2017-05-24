@@ -1815,3 +1815,7 @@ gcc.dg/c11-static-assert-1.c
 
 #unspport -fheinous-gnu-extensions for gnu extension.
 gcc.dg/asm-a.c
+
+# skip for riscv64 which will show
+# array is too large (4611686018427387648 elements) frond end error message
+gcc.c-torture/execute/991014-1.c
