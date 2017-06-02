@@ -249,6 +249,37 @@ gcc.dg/c99-restrict-1.c
 gcc.dg/c99-restrict-2.c
 gcc.dg/c99-restrict-3.c
 gcc.dg/c99-static-1.c
+gcc.dg/c90-idem-qual-1.c
+gcc.dg/c90-idem-qual-2.c
+gcc.dg/c90-idem-qual-3.c
+gcc.dg/c90-impl-int-2.c
+gcc.dg/c90-init-1.c
+gcc.dg/c90-left-shift-2.c
+gcc.dg/c90-longlong-1.c
+gcc.dg/c90-mixdecl-1.c
+gcc.dg/c90-static-assert-1.c
+gcc.dg/c90-vla-1.c
+gcc.dg/c99-align-1.c
+gcc.dg/c99-anon-struct-1.c
+gcc.dg/c99-array-lval-2.c
+gcc.dg/c99-array-lval-4.c
+gcc.dg/c99-bool-3.c
+gcc.dg/c99-complex-3.c
+gcc.dg/c99-const-expr-9.c
+gcc.dg/c99-dupqual-1.c
+gcc.dg/c99-flex-array-3.c
+gcc.dg/c99-flex-array-7.c
+gcc.dg/c99-flex-array-typedef-3.c
+gcc.dg/c99-flex-array-typedef-7.c
+gcc.dg/c99-func-3.c
+gcc.dg/c99-idem-qual-2.c
+gcc.dg/c99-impl-int-2.c
+gcc.dg/c99-init-1.c
+gcc.dg/c99-init-6.c
+gcc.dg/c99-static-assert-1.c
+gcc.dg/c99-stdint-2.c
+gcc.dg/c99-tag-3.c
+gcc.dg/pr40172-3.c
 c99-tag-1.c
 c99-tag-2.c
 c99-vla-jump-1.c
@@ -324,6 +355,33 @@ gcc.dg/funcdef-storage-1.c
 gcc.dg/funcdef-var-1.c
 gcc.dg/funcdef-var-2.c
 gcc.dg/incomplete-typedef-1.c
+gcc.dg/pr15236.c
+gcc.dg/pr15698-1.c
+gcc.dg/pr17112-1.c
+gcc.dg/pr29521-2.c
+gcc.dg/comp-goto-2.c
+gcc.dg/comp-goto-3.c
+gcc.dg/declspec-12.c
+gcc.dg/declspec-14.c
+gcc.dg/declspec-2.c
+gcc.dg/dremf-type-compat-1.c
+gcc.dg/dremf-type-compat-2.c
+gcc.dg/dremf-type-compat-3.c
+gcc.dg/empty-source-2.c
+gcc.dg/empty-source-3.c
+gcc.dg/extra-semi-2.c
+gcc.dg/extra-semi-3.c
+gcc.dg/gnu-cond-expr-2.c
+gcc.dg/gnu-cond-expr-3.c
+gcc.dg/init-empty-2.c
+gcc.dg/init-empty-3.c
+gcc.dg/lvalue-6.c
+gcc.dg/lvalue-7.c
+gcc.dg/old-style-prom-1.c
+gcc.dg/old-style-prom-2.c
+gcc.dg/old-style-prom-3.c
+gcc.dg/pointer-arith-7.c
+gcc.dg/pointer-arith-8.c
 init-bad-1.c
 init-bad-2.c
 init-bad-3.c
@@ -891,6 +949,7 @@ gcc.c-torture/execute/bcp-1.c
 # __builtin_constant_p (x) will return 1 if x could determine as constant at compile time.
 # It's an optimization regression test, check it later.
 gcc.c-torture/execute/builtin-constant.c
+gcc.dg/addr_equal-1.c
 
 # It's a generic code bug and should fix on the maintrunk
 # reopen the case when we update the code base.
@@ -997,9 +1056,13 @@ gcc.dg/20031012-1.c
 gcc.dg/20040206-1.c
 gcc.dg/20040223-1.c
 gcc.dg/20080820.c
+gcc.dg/divbyzero.c
+gcc.dg/pr28322-2.c
+gcc.dg/pr64440.c
 gcc.dg/Waddress.c
 gcc.dg/Wall.c
 gcc.dg/Walways-true-1.c
+gcc.dg/Walways-true-2.c
 gcc.dg/Warray-bounds-15.c
 gcc.dg/Warray-bounds.c
 gcc.dg/Wattributes-1.c
@@ -1266,6 +1329,9 @@ gcc.dg/wvla-4.c
 gcc.dg/wvla-5.c
 gcc.dg/wvla-6.c
 gcc.dg/wvla-7.c
+gcc.dg/attr-noinline.c
+gcc.dg/attr-weakref-3.c
+gcc.dg/attr-weakref-4.c
 c-c++-common/Waddress-1.c
 c-c++-common/Wcast-qual-1.c
 c-c++-common/Wconversion-real.c
@@ -1445,6 +1511,28 @@ gcc.dg/vla-init-3.c
 gcc.dg/void-cast-2.c
 gcc.dg/wtr-func-def-1.c
 gcc.dg/wtr-int-type-1.c
+gcc.dg/attr-weakref-2.c
+gcc.dg/c11-anon-struct-3.c
+gcc.dg/c90-align-1.c
+gcc.dg/c90-anon-struct-1.c
+gcc.dg/c90-array-lval-2.c
+gcc.dg/c90-array-lval-4.c
+gcc.dg/c90-arraydecl-1.c
+gcc.dg/c90-complit-1.c
+gcc.dg/c90-const-expr-9.c
+gcc.dg/c90-enum-comma-1.c
+gcc.dg/c90-flex-array-1.c
+gcc.dg/c90-fordecl-1.c
+gcc.dg/warn-addr-cmp.c
+gcc.dg/vla-18.c
+gcc.dg/pr69900.c
+gcc.dg/pr60915.c
+gcc.dg/pr36489.c
+c-c++-common/Wshift-overflow-1.c
+c-c++-common/nonnull-1.c
+c-c++-common/pr58346-1.c
+c-c++-common/pr58346-2.c
+c-c++-common/pr58346-3.c
 c-c++-common/builtin-offsetof.c
 c-c++-common/conflict-markers-1.c
 c-c++-common/conflict-markers-10.c
@@ -1482,6 +1570,15 @@ c-c++-common/vector-shift3.c
 c-c++-common/vector-subscript-1.c
 gcc.dg/asm-1.c
 gcc.dg/builtins-error.c
+gcc.dg/union-cast-2.c
+gcc.dg/union-cast-3.c
+gcc.dg/transparent-union-3.c
+gcc.dg/system-binary-constants-1.c
+gcc.dg/sync-1.c
+gcc.dg/switch-6.c
+gcc.dg/switch-7.c
+gcc.dg/stmt-expr-2.c
+gcc.dg/stmt-expr-3.c
 
 # gcc expect link_error function call could optimize away,
 # but llvm can't do it now.
@@ -1841,3 +1938,77 @@ c-c++-common/torture/builtin-arith-overflow-6.c
 # so it probably undefined behavior.
 # Correct the message if you find relative rule or you have other thought.
 gcc.dg/torture/fp-int-convert-timode.c
+
+# clang not support __attribute__((mode(QI)))
+gcc.dg/20011214-1.c
+
+# clang not support struct Foo { int; };
+# which will show:  declaration does not declare anything
+gcc.dg/anon-struct-5.c
+
+# clang will show: weakref declaration of 'Wf1c' must also have an alias attribute
+gcc.dg/attr-weakref-1.c
+
+# It seems that clang have different behavior of
+# __builtin_object_size and __builtin_offsetof
+gcc.dg/builtin-object-size-1.c
+gcc.dg/builtin-object-size-2.c
+gcc.dg/builtin-object-size-3.c
+gcc.dg/builtin-object-size-4.c
+gcc.dg/builtin-object-size-6.c
+gcc.dg/builtin-object-size-7.c
+gcc.dg/builtin-object-size-8.c
+gcc.dg/builtin-object-size-11.c
+gcc.dg/builtin-object-size-13.c
+gcc.dg/builtin-object-size-15.c
+
+# clang fail due to not support gnu_inline.
+# extern inline __attribute__((gnu_inline)) foo() {};
+# This definition of foo is used only for inlining.
+# It is not compiled as a standalone function.
+# So gcc will generate function call to mysnprintf but clang won't.
+gcc.dg/builtins-85.c
+
+# clang preprocessor have different behavior
+gcc.dg/c90-hexfloat-2.c
+
+# clang not support gnu "cleanup" attribute
+gcc.dg/cleanup-12.c
+gcc.dg/cleanup-13.c
+gcc.dg/cleanup-5.c
+
+# clang have different inline behavior
+gcc.dg/varpool-1.c
+
+# clang not support -fsso-struct=
+gcc.dg/sso-6.c
+gcc.dg/sso-7.c
+gcc.dg/sso-8.c
+
+# clang will let b array in function f become global variable
+# It seems like a clang bug!
+gcc.dg/pr38615.c
+
+# clang compile with -fstack-protector will can't find __stack_chk_guard
+# Not sure should llvm obtain it or library.
+# check it later.
+gcc.dg/pr38616.c
+gcc.dg/pr38902.c
+gcc.dg/pr54921.c
+
+# It seems like a clang preprocessor bugs
+# that __BASE_FILE__ assign to pre_inc_base_file
+# pre_inc_base_file didn't get file name !!
+gcc.dg/pr33919.c
+
+# It seems reasonable to me that clang/llvm optimize to call memcpy
+# Not sure why gcc avoid this. Skip the testcase.
+# Correct the message if you figure out why gcc doing this.
+gcc.dg/string-opt-1.c
+
+# LLVM porting not implement sibling call yet.
+# Run the test cases when we done the relative implementation.
+gcc.dg/sibcall-10.c
+gcc.dg/sibcall-3.c
+gcc.dg/sibcall-4.c
+gcc.dg/sibcall-9.c
