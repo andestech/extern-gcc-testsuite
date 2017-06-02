@@ -109,6 +109,7 @@ gcc.dg/vla-22.c
 gcc.dg/lto/20090706-1_0.c
 gcc.dg/torture/pr48953.c
 gcc.dg/pr51990.c
+gcc.dg/compat/struct-by-value-22_x.c
 
 # Not support atomic load operations
 gcc.c-torture/compile/20061005-1.c
@@ -766,6 +767,7 @@ gcc.dg/bitfld-9.c
 gcc.dg/cpp/trad/builtins.c
 gcc.dg/cpp/trad/literals-1.c
 gcc.dg/cpp/trad/macroargs.c
+gcc.dg/cpp/trad/mi1.c
 
 # error : unable to pass LLVM bit-code files to linker
 # -flto need gold linker plugin
@@ -1392,6 +1394,9 @@ gcc.dg/unused-5.c
 gcc.dg/c99-complit-2.c
 gcc.dg/c99-init-5.c
 gcc.dg/pr66869.c
+gcc.dg/cpp/trad/Wunused.c
+gcc.dg/cpp/trad/comment-2.c
+gcc.dg/cpp/trad/comment-3.c
 
 # ignore the test case due to different error message
 gcc.dg/torture/pr60606-1.c
@@ -1579,6 +1584,20 @@ gcc.dg/switch-6.c
 gcc.dg/switch-7.c
 gcc.dg/stmt-expr-2.c
 gcc.dg/stmt-expr-3.c
+gcc.dg/cpp/trad/argcount.c
+gcc.dg/cpp/trad/assembler.S
+gcc.dg/cpp/trad/assert2.c
+gcc.dg/cpp/trad/comment.c
+gcc.dg/cpp/trad/defined.c
+gcc.dg/cpp/trad/directive.c
+gcc.dg/cpp/trad/funlike-3.c
+gcc.dg/cpp/trad/funlike.c
+gcc.dg/cpp/trad/literals-2.c
+gcc.dg/cpp/trad/null-drctv.c
+gcc.dg/cpp/trad/pr65238-4.c
+gcc.dg/cpp/trad/quote.c
+gcc.dg/cpp/trad/recurse-3.c
+gcc.dg/cpp/trad/redef2.c
 
 # gcc expect link_error function call could optimize away,
 # but llvm can't do it now.
