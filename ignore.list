@@ -583,6 +583,70 @@ gcc.dg/pr64766.c
 gcc.dg/pr64778.c
 gcc.dg/pr64417.c
 gcc.dg/va-arg-2.c
+gcc.dg/noncompile/20000901-1.c
+gcc.dg/noncompile/20001228-1.c
+gcc.dg/noncompile/20010425-1.c
+gcc.dg/noncompile/20010524-1.c
+gcc.dg/noncompile/20011025-1.c
+gcc.dg/noncompile/20020130-1.c
+gcc.dg/noncompile/20020207-1.c
+gcc.dg/noncompile/20020207-1.c
+gcc.dg/noncompile/20020213-1.c
+gcc.dg/noncompile/20020220-1.c
+gcc.dg/noncompile/20030818-1.c
+gcc.dg/noncompile/20040203-1.c
+gcc.dg/noncompile/20040203-2.c
+gcc.dg/noncompile/20040203-3.c
+gcc.dg/noncompile/20040629-1.c
+gcc.dg/noncompile/20041207.c
+gcc.dg/noncompile/20050120-1.c
+gcc.dg/noncompile/920507-1.c
+gcc.dg/noncompile/920616-2.c
+gcc.dg/noncompile/920721-2.c
+gcc.dg/noncompile/920824-1.c
+gcc.dg/noncompile/920923-1.c
+gcc.dg/noncompile/921102-1.c
+gcc.dg/noncompile/921116-1.c
+gcc.dg/noncompile/930301-1.c
+gcc.dg/noncompile/930622-1.c
+gcc.dg/noncompile/930622-2.c
+gcc.dg/noncompile/930714-1.c
+gcc.dg/noncompile/931203-1.c
+gcc.dg/noncompile/940112-1.c
+gcc.dg/noncompile/940227-1.c
+gcc.dg/noncompile/950825-1.c
+gcc.dg/noncompile/950921-1.c
+gcc.dg/noncompile/951123-1.c
+gcc.dg/noncompile/971104-1.c
+gcc.dg/noncompile/990416-1.c
+gcc.dg/noncompile/const-ll-1.c
+gcc.dg/noncompile/incomplete-1.c
+gcc.dg/noncompile/incomplete-2.c
+gcc.dg/noncompile/incomplete-3.c
+gcc.dg/noncompile/incomplete-4.c
+gcc.dg/noncompile/incomplete-5.c
+gcc.dg/noncompile/init-1.c
+gcc.dg/noncompile/init-2.c
+gcc.dg/noncompile/init-3.c
+gcc.dg/noncompile/init-4.c
+gcc.dg/noncompile/init-5.c
+gcc.dg/noncompile/invalid_asm.c
+gcc.dg/noncompile/label-1.c
+gcc.dg/noncompile/label-lineno-1.c
+gcc.dg/noncompile/old-style-parm-1.c
+gcc.dg/noncompile/old-style-parm-2.c
+gcc.dg/noncompile/pr23576.c
+gcc.dg/noncompile/pr35444-1.c
+gcc.dg/noncompile/pr35444-2.c
+gcc.dg/noncompile/pr35447-1.c
+gcc.dg/noncompile/pr40033-1.c
+gcc.dg/noncompile/pr44517.c
+gcc.dg/noncompile/pr52290.c
+gcc.dg/noncompile/redecl-1.c
+gcc.dg/noncompile/undeclared-1.c
+gcc.dg/noncompile/undeclared-2.c
+gcc.dg/noncompile/va-arg-1.c
+gcc.dg/noncompile/voidparam-1.c
 
 # Test for spec
 gcc.dg/spec-options.c
@@ -1669,6 +1733,7 @@ gcc.dg/torture/pr27302.c
 gcc.c-torture/execute/medce-1.c
 gcc.dg/pr15785-1.c
 gcc.dg/pr30951.c
+gcc.c-torture/execute/ieee/fp-cmp-7.c
 
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
@@ -2127,3 +2192,6 @@ gcc.dg/sso/t9.c
 gcc.dg/sso/t13.c
 gcc.dg/sso/u5.c
 gcc.dg/sso/u6.c
+
+# clang not support -dumpbase option
+gcc.c-torture/unsorted/dump-noaddr.c
