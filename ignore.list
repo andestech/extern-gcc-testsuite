@@ -1461,8 +1461,13 @@ gcc.dg/pr66869.c
 gcc.dg/cpp/trad/Wunused.c
 gcc.dg/cpp/trad/comment-2.c
 gcc.dg/cpp/trad/comment-3.c
+gcc.misc-tests/mg-2.c
+c-c++-common/goacc/Wparentheses-1.c
+c-c++-common/goacc/uninit-use-device-clause.c
 
 # ignore the test case due to different error message
+c-c++-common/goacc/deviceptr-1.c
+c-c++-common/goacc/pragma_context.c
 gcc.dg/torture/pr60606-1.c
 gcc.dg/torture/pr67741.c
 gcc.dg/pr64766.c
@@ -1723,6 +1728,7 @@ gcc.dg/torture/builtin-math-8.c
 gcc.dg/torture/builtin-sqrt-cmp-1.c
 gcc.dg/torture/builtin-symmetric-1.c
 gcc.dg/torture/pr27302-2.c
+gcc.dg/ipa/ipa-pta-13.c
 
 # gcc can optimize out link_error in -O0
 # but llvm won't
@@ -1773,6 +1779,7 @@ gcc.dg/c99-typespec-1.c
 gcc.dg/torture/pr42898-2.c
 gcc.dg/torture/pr42898.c
 gcc.dg/pr30957-1.c
+gcc.dg/autopar/pr49960.c
 
 # It seems that clang will try to find the builtin function prototype
 # not the extern declaration one.
@@ -2195,3 +2202,6 @@ gcc.dg/sso/u6.c
 
 # clang not support -dumpbase option
 gcc.c-torture/unsorted/dump-noaddr.c
+
+# clang not support __attribute__ ((noinline, section ("test_section")))
+gcc.dg/ipa/ipa-clone-1.c
