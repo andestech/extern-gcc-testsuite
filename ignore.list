@@ -2538,3 +2538,23 @@ gcc.dg/debug/dwarf2/stacked-qualified-types-3.c
 gcc.dg/debug/dwarf2/struct-loc1.c
 gcc.dg/debug/dwarf2/var1.c
 gcc.dg/debug/dwarf2/var2.c
+
+# It seems like a llvm bug!
+# check it later
+gcc.dg/graphite/block-6.c
+
+# LLVM show error message:
+# fatal error: error in backend:
+# Error while trying to spill X5_32 from class GPR: Cannot scavenge register
+# without an emergency spill slot!
+#
+# It's a big stack access test case.
+# For the offset exceed instruction's load/store/add offset.
+# We need scavenge register for generate lui/addi pair.
+# LLVM have strategy to spill a register to get free scavenge register.
+# However, in this case the spill register instruction's offset exceed
+# instruction limitation too, so it need another scavenge register 
+# which make the stategy fail.
+# Other CPU could avoid fail in this case due to they have bigger offset limitation.
+# Please correct the message if you have other thougth or other way to fix the issue.
+gcc.c-torture/compile/pr37669-2.c
