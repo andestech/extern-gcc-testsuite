@@ -2228,3 +2228,6 @@ gcc.dg/weak/weak-2.c
 gcc.dg/weak/weak-3.c
 gcc.dg/weak/weak-4.c
 gcc.dg/weak/weak-5.c
+
+# It seems that clang not support some cilkplus semantic
+gcc.dg/graphite/id-28.c
