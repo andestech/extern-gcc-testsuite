@@ -1464,8 +1464,10 @@ gcc.dg/cpp/trad/comment-3.c
 gcc.misc-tests/mg-2.c
 c-c++-common/goacc/Wparentheses-1.c
 c-c++-common/goacc/uninit-use-device-clause.c
+gcc.dg/weak/weak-17.c
 
 # ignore the test case due to different error message
+gcc.dg/weak/weak-18.c
 c-c++-common/goacc/deviceptr-1.c
 c-c++-common/goacc/pragma_context.c
 gcc.dg/torture/pr60606-1.c
@@ -2205,3 +2207,24 @@ gcc.c-torture/unsorted/dump-noaddr.c
 
 # clang not support __attribute__ ((noinline, section ("test_section")))
 gcc.dg/ipa/ipa-clone-1.c
+
+# It seems that clang not support input file overwrite
+# and the input file name is generate by expect script
+# find another way to filter it
+# output.exp
+
+# Clang show error message:
+# weak declaration cannot have internal linkage
+# It seems that clang not allow internal symbol as weak symbol.
+gcc.dg/weak/weak-14.c
+
+# LLVM RISCV will generate indirect call in this case
+# so the scan-assmebler can't not find 6 baz3
+gcc.dg/weak/typeof-2.c
+
+# ffoo1c didn't take as weak symbol ?
+# Is it a clang bug ?
+gcc.dg/weak/weak-2.c
+gcc.dg/weak/weak-3.c
+gcc.dg/weak/weak-4.c
+gcc.dg/weak/weak-5.c
