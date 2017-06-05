@@ -2440,3 +2440,47 @@ gcc.dg/weak/weak-5.c
 
 # It seems that clang not support some cilkplus semantic
 gcc.dg/graphite/id-28.c
+
+# clang have different pch(precompile header) usage
+gcc.dg/pch/common-1.c
+gcc.dg/pch/counter-1.c
+gcc.dg/pch/counter-2.c
+gcc.dg/pch/counter-3.c
+gcc.dg/pch/cpp-1.c
+gcc.dg/pch/cpp-2.c
+gcc.dg/pch/cpp-3.c
+gcc.dg/pch/decl-1.c
+gcc.dg/pch/decl-2.c
+gcc.dg/pch/decl-3.c
+gcc.dg/pch/decl-4.c
+gcc.dg/pch/decl-5.c
+gcc.dg/pch/empty.c
+gcc.dg/pch/except-1.c
+gcc.dg/pch/global-1.c
+gcc.dg/pch/ident-1.c
+gcc.dg/pch/import-1.c
+gcc.dg/pch/import-2.c
+gcc.dg/pch/inline-1.c
+gcc.dg/pch/inline-2.c
+gcc.dg/pch/inline-3.c
+gcc.dg/pch/inline-4.c
+gcc.dg/pch/macro-1.c
+gcc.dg/pch/macro-2.c
+gcc.dg/pch/macro-3.c
+gcc.dg/pch/macro-4.c
+gcc.dg/pch/save-temps-1.c
+gcc.dg/pch/static-1.c
+gcc.dg/pch/static-2.c
+gcc.dg/pch/static-3.c
+gcc.dg/pch/struct-1.c
+gcc.dg/pch/system-1.c
+gcc.dg/pch/valid-1.c
+gcc.dg/pch/valid-1b.c
+gcc.dg/pch/valid-2.c
+gcc.dg/pch/valid-4.c
+gcc.dg/pch/valid-5.c
+gcc.dg/pch/valid-6.c
+gcc.dg/pch/warn-1.c
+gcc.dg/pch/largefile.c
+largefile.c
+./inline-2.h
