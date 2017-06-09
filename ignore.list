@@ -1930,6 +1930,10 @@ c-c++-common/cpp/warning-directive-2.c
 c-c++-common/cpp/warning-directive-3.c
 c-c++-common/cpp/warning-directive-4.c
 c-c++-common/cpp/warning-zero-in-literals-1.c
+gcc.dg/large-size-array-5.c
+gcc.dg/large-size-array.c
+gcc.dg/pr42611.c
+
 # gcc expect link_error function call could optimize away,
 # but llvm can't do it now.
 gcc.dg/torture/builtin-cproj-1.c
@@ -1952,6 +1956,7 @@ gcc.c-torture/execute/medce-1.c
 gcc.dg/pr15785-1.c
 gcc.dg/pr30951.c
 gcc.c-torture/execute/ieee/fp-cmp-7.c
+gcc.dg/tree-ssa/ssa-ccp-33.c
 
 # gcc expect builtin math function could to constant folding
 # but llvm can't do it now.
@@ -2057,6 +2062,7 @@ gcc.dg/tree-ssa/vrp78.c
 gcc.dg/tree-ssa/vrp80.c
 gcc.dg/tree-ssa/vrp85.c
 gcc.dg/tree-ssa/vrp90.c
+gcc.dg/tree-ssa/alias-23.c
 gcc.dg/builtin-assume-aligned-1.c
 gcc.dg/fold-perm.c
 gcc.dg/strlenopt-19.c
@@ -2486,6 +2492,14 @@ gcc.dg/pch/largefile.c
 largefile.c
 ./inline-2.h
 
+# clang show error message:
+# cannot convert between vector values of different size
+gcc.dg/pr69896.c
+gcc.dg/pr70326.c
+
+# Not a code generation error, skip it
+gcc.dg/visibility-d.c
+
 # clang/llvm debug message print by -gdwarf-2 is little different with gcc.
 # So scan-assembler may fail.
 c-c++-common/dwarf2/pr43190.c
@@ -2558,3 +2572,7 @@ gcc.dg/graphite/block-6.c
 # Other CPU could avoid fail in this case due to they have bigger offset limitation.
 # Please correct the message if you have other thougth or other way to fix the issue.
 gcc.c-torture/compile/pr37669-2.c
+
+# Clang not support passing empty structure by variable argument
+# Please correct the message if you have other thougth or other way to fix the issue.
+*struct-layout-1*
