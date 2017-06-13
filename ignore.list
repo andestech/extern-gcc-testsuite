@@ -2573,7 +2573,3 @@ gcc.dg/graphite/block-6.c
 # Other CPU could avoid fail in this case due to they have bigger offset limitation.
 # Please correct the message if you have other thougth or other way to fix the issue.
 gcc.c-torture/compile/pr37669-2.c
-
-# Clang not support passing empty structure by variable argument
-# Please correct the message if you have other thougth or other way to fix the issue.
-*struct-layout-1*
