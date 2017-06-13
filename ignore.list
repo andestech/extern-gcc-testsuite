@@ -1471,6 +1471,7 @@ gcc.dg/weak/weak-17.c
 gcc.dg/weak/weak-18.c
 c-c++-common/goacc/deviceptr-1.c
 c-c++-common/goacc/pragma_context.c
+c-c++-common/int128-types-1.c
 gcc.dg/torture/pr60606-1.c
 gcc.dg/torture/pr67741.c
 gcc.dg/pr64766.c
