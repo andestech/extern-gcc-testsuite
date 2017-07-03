@@ -112,6 +112,9 @@ gcc.dg/pr51990.c
 gcc.dg/compat/struct-by-value-22_x.c
 gcc.dg/compat/struct-by-value-22
 gcc.dg/pr34457-1.c
+gcc.dg/lto/20090706-1
+gcc.dg/lto/20081212-1
+gcc.dg/lto/20091209-1
 
 # Not support atomic load operations
 gcc.c-torture/compile/20061005-1.c
