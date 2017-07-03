@@ -111,6 +111,7 @@ gcc.dg/torture/pr48953.c
 gcc.dg/pr51990.c
 gcc.dg/compat/struct-by-value-22_x.c
 gcc.dg/compat/struct-by-value-22
+gcc.dg/pr34457-1.c
 
 # Not support atomic load operations
 gcc.c-torture/compile/20061005-1.c
@@ -834,17 +835,6 @@ gcc.dg/cpp/trad/literals-1.c
 gcc.dg/cpp/trad/macroargs.c
 gcc.dg/cpp/trad/mi1.c
 
-# error : unable to pass LLVM bit-code files to linker
-# -flto need gold linker plugin
-# ignore the cases before we have golder linker
-# Most of the LTO test case could disable by setting ENABLE_LTO 0 in site.exp
-gcc.dg/initpri3.c
-gcc.dg/pr30762-1.c
-gcc.dg/pr31529-1.c
-gcc.dg/pr34457-1.c
-gcc.dg/pr34668-1.c
-gcc.dg/pr43557-1.c
-gcc.dg/ipa/pr48195.c
 # clang will expect :
 # first parameter of 'main' (argument count) must be of type 'int'
 # second parameter of 'main' (argument array) must be of type 'char **
