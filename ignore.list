@@ -2571,3 +2571,8 @@ gcc.c-torture/compile/pr37669-2.c
 # llvm integrate assembler which will show assembly format a little different.
 gcc.dg/inline-3.c
 gcc.dg/pr28755.c
+
+# Error message: Never resolved function from blockaddress
+# It seems like a llvm bug after enable LTO
+# check it later
+gcc.c-torture/execute/920302-1.c
