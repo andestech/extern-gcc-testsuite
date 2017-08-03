@@ -69,8 +69,10 @@ gcc.dg/gomp/nestedfn-1.c
 gcc.dg/gomp/pr66633-1.c
 gcc.dg/gomp/pr66633-3.c
 gcc.dg/lto/pr55703_0.c
+gcc.dg/lto/pr55703
 gcc.dg/lto/pr59323-2_0.c
 gcc.dg/lto/pr59323_0.c
+gcc.dg/lto/pr59323
 gcc.dg/torture/nested-fn-1.c
 gcc.dg/torture/pr57036-2.c
 gcc.dg/torture/pr8081.c
@@ -1447,6 +1449,7 @@ c-c++-common/uninit-E-O0.c
 c-c++-common/uninit-E.c
 c-c++-common/uninit-F-O0.c
 c-c++-common/uninit-F.c
+c-c++-common/vector-compare-4.c
 gcc.dg/visibility-7.c
 gcc.dg/unused-5.c
 gcc.dg/c99-complit-2.c
@@ -1927,6 +1930,7 @@ c-c++-common/cpp/warning-zero-in-literals-1.c
 gcc.dg/large-size-array-5.c
 gcc.dg/large-size-array.c
 gcc.dg/pr42611.c
+gcc.dg/attr-alloc_align-2.c
 
 # gcc expect link_error function call could optimize away,
 # but llvm can't do it now.
@@ -2576,3 +2580,31 @@ gcc.dg/pr28755.c
 # It seems like a llvm bug after enable LTO
 # check it later
 gcc.c-torture/execute/920302-1.c
+
+# LLVM 5.0 release will optimize main function call abort directly
+# but the maintrunk 2017 Feb version won't.
+# Probably a optimization bug on release 5.0 branch ?
+gcc.c-torture/execute/20040409-1.c
+gcc.c-torture/execute/20040409-2.c
+gcc.c-torture/execute/20040409-3.c
+
+# LTO test case fail due to LLVM LTO not expect LTO with -Os
+gcc.dg/lto/const-uniq
+gcc.dg/lto/pr60461
+
+# LLVM LTO constant propogation result not as GCC expect
+gcc.dg/lto/ipacp
+gcc.dg/lto/ipareference2
+gcc.dg/lto/ipareference
+
+# LLVM LTO testcase expect to generate share object without main function
+# but we don't support pic yet.
+gcc.dg/lto/pr54709
+gcc.dg/lto/pr61526
+gcc.dg/lto/pr64415
+
+# LLVM show error : reference to 'in6addr_any' is ambiguous
+gcc.dg/lto/pr60820
+
+# LLVM show error : use of undeclared identifier '__transaction_atomic'
+gcc.dg/lto/trans-mem-3
