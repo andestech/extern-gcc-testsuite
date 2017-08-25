@@ -2608,3 +2608,6 @@ gcc.dg/lto/pr60820
 
 # LLVM show error : use of undeclared identifier '__transaction_atomic'
 gcc.dg/lto/trans-mem-3
+
+# LLVM not support tan math function with f128 parameter
+gcc.dg/builtins-7.c
