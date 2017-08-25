@@ -2611,3 +2611,11 @@ gcc.dg/lto/trans-mem-3
 
 # LLVM not support tan math function with f128 parameter
 gcc.dg/builtins-7.c
+
+# clang for rv64 will fail to generate AST
+# It seems like a clang bug
+gcc.dg/float-exact-1.c
+
+# the test case will link fail due to section overlap
+# It seems like a linker script issue.
+gcc.dg/compat/struct-by-value-18
