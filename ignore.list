@@ -2619,3 +2619,10 @@ gcc.dg/float-exact-1.c
 # the test case will link fail due to section overlap
 # It seems like a linker script issue.
 gcc.dg/compat/struct-by-value-18
+
+# Use lld will trigger unalignment access
+# The error cause by casting char array pointer to more strict alignment
+# pointer which should not be linker or compiler's fault.
+gcc.dg/ipa/iinline-5.c execution test
+gcc.dg/ipa/iinline-6.c execution test
+gcc.dg/ipa/iinline-7.c execution test
