@@ -1,5 +1,5 @@
 # Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
-# 2002, 2003, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+# 2002, 2003, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation, Inc.
 #
 # This file is part of DejaGnu.
 #
@@ -64,14 +64,14 @@ proc push_target { name } {
     push_config target $name
 }
 
-# Set the host connnection.
+# Set the host connection.
 #
 proc push_host { name } {
     pop_config host
     push_config host $name
 }
 
-# Set the build connnection.
+# Set the build connection.
 #
 proc push_build { name } {
     pop_config build
@@ -133,8 +133,9 @@ proc prune_warnings { text } {
     }
 
     # See Brendan for the raison d'etre of this one.
+    # http://en.wikipedia.org/wiki/Brendan_Kehoe
     if {[ishost "alpha*-*-*"]} {
-        regsub -all "(^|\n)(/usr/(ucb|bin)/ld.*without exceptions was\[^\n\]+\n?)" $text "\\1" text
+	regsub -all "(^|\n)(/usr/(ucb|bin)/ld.*without exceptions was\[^\n\]+\n?)" $text "\\1" text
     }
     if {[ishost "hppa*-*-hpux*"]} {
        # Ignore the compiler's warnings about PA incompatibility.
@@ -244,8 +245,9 @@ proc prune_warnings { text } {
     regsub -all "(^|\n)(ld.so: warning:\[^\n\]*\n?)+" $text "\\1" text
 
     # See Brendan for the raison d'etre of this one.
+    # http://en.wikipedia.org/wiki/Brendan_Kehoe
     if {[string match "alpha*-*-*" $host_triplet]} {
-        regsub -all "(^|\n)(/usr/(ucb|bin)/ld.*without exceptions was\[^\n\]+\n?)" $text "\\1" text
+	regsub -all "(^|\n)(/usr/(ucb|bin)/ld.*without exceptions was\[^\n\]+\n?)" $text "\\1" text
     }
 
     # Don't pay attention to the AIX4 linker warnings.
@@ -294,10 +296,10 @@ proc prune_warnings { text } {
 #
 proc target_compile {source destfile type options} {
     set target [target_info name]
-    if { [info proc ${target}_compile] != "" } {
-        return [${target}_compile $source $destfile $type $options]
+    if { [info procs ${target}_compile] != "" } {
+	return [${target}_compile $source $destfile $type $options]
     } else {
-        return [default_target_compile $source $destfile $type $options]
+	return [default_target_compile $source $destfile $type $options]
     }
 }
 
@@ -305,6 +307,7 @@ proc default_target_compile {source destfile type options} {
     global target_triplet
     global tool_root_dir
     global CFLAGS_FOR_TARGET
+    global LDFLAGS_FOR_TARGET
     global compiler_flags
 
     if { $destfile == "" && $type != "preprocess" && $type != "none" } {
@@ -322,6 +325,10 @@ proc default_target_compile {source destfile type options} {
 	append add_flags " $CFLAGS_FOR_TARGET"
     }
 
+    if {[info exists LDFLAGS_FOR_TARGET]} {
+	append ldflags " $LDFLAGS_FOR_TARGET"
+    }
+
     if {[info exists target_info(host,name)]} {
 	set host [host_info name]
     } else {
@@ -336,12 +343,12 @@ proc default_target_compile {source destfile type options} {
 		append add_flags " [target_info adaflags]"
 	    }
 	    if {[board_info $dest exists gnatmake]} {
-		set compiler [target_info gnatmake];
+		set compiler [target_info gnatmake]
 	    } else {
-		set compiler [find_gnatmake];
+		set compiler [find_gnatmake]
 	    }
 	}
-	
+
 	if { $i == "c++" } {
 	    set compiler_type "c++"
 	    if {[board_info $dest exists cxxflags]} {
@@ -355,6 +362,18 @@ proc default_target_compile {source destfile type options} {
 	    }
 	}
 
+	if { $i == "d" } {
+	    set compiler_type "d"
+	    if {[board_info $dest exists dflags]} {
+		append add_flags " [target_info dflags]"
+	    }
+	    if {[board_info $dest exists dcompiler]} {
+		set compiler [target_info dcompiler]
+	    } else {
+		set compiler [find_gdc]
+	    }
+	}
+
 	if { $i == "f77" } {
 	    set compiler_type "f77"
 	    if {[board_info $dest exists f77flags]} {
@@ -364,6 +383,18 @@ proc default_target_compile {source destfile type options} {
 		set compiler [target_info f77compiler]
 	    } else {
 		set compiler [find_g77]
+	    }
+	}
+
+	if { $i == "f90" } {
+	    set compiler_type "f90"
+	    if {[board_info $dest exists f90flags]} {
+		append add_flags " [target_info f90flags]"
+	    }
+	    if {[board_info $dest exists f90compiler]} {
+		set compiler [target_info f90compiler]
+	    } else {
+		set compiler [find_gfortran]
 	    }
 	}
 
@@ -402,15 +433,15 @@ proc default_target_compile {source destfile type options} {
 	if {[regexp "^ldscript=" $i]} {
 	    regsub "^ldscript=" $i "" ldscript
 	}
- 	if {[regexp "^redirect=" $i]} {
- 	    regsub "^redirect=" $i "" redirect
- 	}
- 	if {[regexp "^optimize=" $i]} {
- 	    regsub "^optimize=" $i "" optimize
- 	}
- 	if {[regexp "^timeout=" $i]} {
- 	    regsub "^timeout=" $i "" timeout
- 	}
+	if {[regexp "^redirect=" $i]} {
+	    regsub "^redirect=" $i "" redirect
+	}
+	if {[regexp "^optimize=" $i]} {
+	    regsub "^optimize=" $i "" optimize
+	}
+	if {[regexp "^timeout=" $i]} {
+	    regsub "^timeout=" $i "" timeout
+	}
     }
 
     if {[board_info $host exists cflags_for_target]} {
@@ -419,7 +450,9 @@ proc default_target_compile {source destfile type options} {
 
     global CC_FOR_TARGET
     global CXX_FOR_TARGET
+    global D_FOR_TARGET
     global F77_FOR_TARGET
+    global F90_FOR_TARGET
     global GNATMAKE_FOR_TARGET
 
     if {[info exists GNATMAKE_FOR_TARGET]} {
@@ -440,9 +473,21 @@ proc default_target_compile {source destfile type options} {
 	}
     }
 
+    if {[info exists D_FOR_TARGET]} {
+	if { $compiler_type == "d" } {
+	    set compiler $D_FOR_TARGET
+	}
+    }
+
     if {[info exists F77_FOR_TARGET]} {
 	if { $compiler_type == "f77" } {
 	    set compiler $F77_FOR_TARGET
+	}
+    }
+
+    if {[info exists F90_FOR_TARGET]} {
+	if { $compiler_type == "f90" } {
+	    set compiler $F90_FOR_TARGET
 	}
     }
 
@@ -556,7 +601,7 @@ proc default_target_compile {source destfile type options} {
     }
 
     if {[board_info $dest exists multilib_flags]} {
-	append add_flags " [board_info $dest multilib_flags]"
+	set add_flags "[board_info $dest multilib_flags] $add_flags"
     }
 
     verbose "doing compile"
@@ -589,9 +634,9 @@ proc default_target_compile {source destfile type options} {
     # object, because otherwise, in some situations, libtool will
     # become confused about the name of the actual source file.
     if {$type == "object"} {
-        set opts "$add_flags $sources"
+	set opts "$add_flags $sources"
     } else {
-        set opts "$sources $add_flags"
+	set opts "$sources $add_flags"
     }
 
     if {[is_remote host]} {
@@ -629,7 +674,7 @@ proc default_target_compile {source destfile type options} {
 	verbose -log "compiler exited with status [lindex $status 0]"
     }
     if { [lindex $status 1] != "" } {
-	verbose -log "output is:\n[lindex $status 1]" 2
+	verbose "output is:\n[lindex $status 1]" 2
     }
     if { [lindex $status 0] != 0 && "${comp_output}" == "" } {
 	set comp_output "exit status is [lindex $status 0]"
@@ -685,7 +730,7 @@ proc default_target_assemble { source destfile flags } {
 	verbose -log "assembler exited with status [lindex $status 0]"
     }
     if { [lindex $status 1] != "" } {
-	verbose -log "assembler output is:\n[lindex $status 1]" 2
+	verbose "assembler output is:\n[lindex $status 1]" 2
     }
     return ${comp_output}
 }
@@ -708,8 +753,8 @@ proc default_link { board objects destfile flags } {
 	set ldflags [split $ldflags]
 	set len [llength $ldflags]
 	for { set i 0 } { $i < $len } { incr i } {
-	    # ??? We ignore the situation where a -L is actually the argument
-	    # to an option.
+	    # Note: We ignore the situation where a -L is actually the
+	    # argument to an option.
 	    set arg [lindex $ldflags $i]
 	    regsub "^-Wl," $arg "" arg
 	    if {[regexp "^-L" $arg]} {
@@ -777,7 +822,7 @@ proc default_link { board objects destfile flags } {
 	verbose -log "linker exited with status [lindex $status 0]"
     }
     if { [lindex $status 1] != "" } {
-	verbose -log "linker output is:\n[lindex $status 1]" 2
+	verbose "linker output is:\n[lindex $status 1]" 2
     }
     return ${comp_output}
 }

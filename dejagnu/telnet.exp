@@ -31,7 +31,7 @@ proc telnet_open { hostname args } {
 
     set raw 0
     foreach arg $args {
-	switch $arg {
+	switch -- $arg {
 	    "raw" { set raw 1 }
 	}
     }
@@ -73,7 +73,7 @@ proc telnet_open { hostname args } {
     }
 
     if {[board_info $connhost exists shell_prompt]} {
-        set shell_prompt [board_info $connhost shell_prompt]
+	set shell_prompt [board_info $connhost shell_prompt]
     }
     if {![info exists shell_prompt]} {
 	# If no prompt, then set it to something generic.

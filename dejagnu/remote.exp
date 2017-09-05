@@ -56,13 +56,68 @@ proc remote_raw_open { args } {
     return [eval call_remote raw open $args]
 }
 
-# Run the specified COMMANDLINE on the local machine, redirecting input
-# to file INP (if non-empty), redirecting output to file OUTP (if non-empty),
-# and waiting TIMEOUT seconds for the command to complete before killing
-# it. A two-member list is returned; the first member is the exit status
-# of the command, the second is any output produced from the command
-# (if output is redirected, this may or may not be empty). If output is
-# redirected, both stdout and stderr will appear in the specified file.
+# Close a spawn ID, and wait for the process to die.  If PID is not
+# -1, then the process is killed if it doesn't exit gracefully.
+#
+proc close_wait_program { program_id pid {wres_varname ""} } {
+    if {$wres_varname != "" } {
+	upvar 1 $wres_varname wres
+    }
+
+    set exec_pid -1
+
+    if { $pid > 0 } {
+	# Tcl has no kill primitive, so we have to execute an external
+	# command in order to kill the process.
+	verbose "doing kill, pid is $pid"
+	# Prepend "-" to generate the "process group ID" needed by
+	# kill.
+	set pgid "-$pid"
+	# Send SIGINT to give the program a better chance to interrupt
+	# whatever it might be doing and react to stdin closing.
+	# eg, in case of GDB, this should get it back to the prompt.
+	exec sh -c "exec > /dev/null 2>&1 && (kill -2 $pgid || kill -2 $pid)"
+
+	# If the program doesn't exit gracefully when stdin closes,
+	# we'll need to kill it.  But only do this after 'wait'ing a
+	# bit, to avoid killing the wrong process in case of a
+	# PID-reuse race.  The extra sleep at the end is there to give
+	# time to kill $exec_pid without having _that_ be subject to a
+	# PID reuse race.
+	set secs 5
+	set sh_cmd "exec > /dev/null 2>&1"
+	append sh_cmd " && sleep $secs && (kill -15 $pgid || kill -15 $pid)"
+	append sh_cmd " && sleep $secs && (kill -9 $pgid || kill -9 $pid)"
+	append sh_cmd " && sleep $secs"
+	set exec_pid [exec sh -c "$sh_cmd" &]
+    }
+    verbose "pid is $pid"
+
+    # This closes the program's stdin.  This should cause well behaved
+    # interactive programs to exit.  This will hang if the kill
+    # doesn't work.  Nothin' to do, and it's not OK.
+    catch "close -i $program_id"
+
+    # Reap it.
+    set res [catch "wait -i $program_id" wres]
+    if {$exec_pid != -1} {
+	# We reaped the process, so cancel the pending force-kills, as
+	# otherwise if the PID is reused for some other unrelated
+	# process, we'd kill the wrong process.
+	exec sh -c "exec > /dev/null 2>&1 && kill -9 $exec_pid"
+    }
+
+    return $res
+}
+
+# Run the specified COMMANDLINE on the local machine, redirecting
+# input from file INP (if non-empty), redirecting output to file OUTP
+# (if non-empty), and waiting TIMEOUT seconds for the command to
+# complete before killing it. A list of two elements is returned: the
+# first member is the exit status of the command, the second is any
+# output produced from the command (if output is redirected, this may
+# or may not be empty). If output is redirected, both stdout and
+# stderr will appear in the specified file.
 #
 # Caveats: A pipeline is used if input or output is redirected. There
 # will be problems with killing the program if a pipeline is used. Either
@@ -71,8 +126,8 @@ proc remote_raw_open { args } {
 # the kill command will be invoked.
 #
 proc local_exec { commandline inp outp timeout } {
-    # Tcl's exec is a pile of crap. It does two very inappropriate things
-    # firstly, it has no business returning an error if the program being
+    # Tcl's exec is a pile of crap. It does two very inappropriate things.
+    # Firstly, it has no business returning an error if the program being
     # executed happens to write to stderr. Secondly, it appends its own
     # error messages to the output of the command if the process exits with
     # non-zero status.
@@ -82,15 +137,19 @@ proc local_exec { commandline inp outp timeout } {
     # redirected I/O. We also hope that nobody passes in a command that's
     # a pipeline, because spawn can't handle it.
     #
-    # We want to use spawn in most cases, because tcl's pipe mechanism
+    # We want to use spawn in most cases, because Tcl's pipe mechanism
     # doesn't assign process groups correctly and we can't reliably kill
-    # programs that bear children. We can't use tcl's exec because it has
-    # no way to timeout programs that hang. *sigh*
-
+    # programs that bear children. We can't use Tcl's exec because it has
+    # no way to timeout programs that hang.
+    #
+    # The expect command will close the connection when it sees
+    # EOF. Closing the connection may send SIGHUP to the child and
+    # cause it to exit before it can exit normally.  The child should
+    # ignore SIGHUP.
     global errorInfo
     if { "$inp" == "" && "$outp" == "" } {
 	set id -1
-	set result [catch "eval spawn \{${commandline}\}" pid]
+	set result [catch "eval spawn -ignore SIGHUP \{${commandline}\}" pid]
 	if { $result == 0 } {
 	    set result2 0
 	} else {
@@ -98,8 +157,7 @@ proc local_exec { commandline inp outp timeout } {
 	    set result2 5
 	}
     } else {
-	# Can you say "uuuuuugly"? I knew you could!
-	# All in the name of non-infinite hangs.
+	# Use a command pipeline with open.
 	if { $inp != "" } {
 	    set inp "< $inp"
 	    set mode "r"
@@ -130,7 +188,7 @@ proc local_exec { commandline inp outp timeout } {
 	    return [list -1 "open of $commandline $inp $outp failed: $errorInfo"]
 	}
 	set pid [pid $id]
-	set result [catch "spawn -leaveopen $id" result2]
+	set result [catch "spawn -ignore SIGHUP -leaveopen $id" result2]
     }
     # Prepend "-" to each pid, to generate the "process group IDs" needed by
     # kill.
@@ -156,32 +214,21 @@ proc local_exec { commandline inp outp timeout } {
     expect {
 	-i $spawn_id -timeout $timeout -re ".+" {
 	    append output $expect_out(buffer)
-	    if { [string length $output] < 512000 } {
-		exp_continue -continue_timer
-	    }
+	    exp_continue -continue_timer
 	}
 	timeout {
-	    warning "program timed out."
+	    warning "program timed out"
 	}
 	eof {
 	    set got_eof 1
 	}
     }
 
-    # Uuuuuuugh. Now I'm getting really sick.
-    # If we didn't get an EOF, we have to kill the poor defenseless program.
-    # However, Tcl has no kill primitive, so we have to execute an external
-    # command in order to execute the execution. (English. Gotta love it.)
-    if { ! $got_eof } {
-	verbose "killing $pid $pgid"
-	# This is very, very nasty. SH, instead of EXPECT, is used to
-	# run this in the background since, on older CYGWINs, a
-	# strange file I/O error occures.
-	exec sh -c "exec > /dev/null 2>&1 && (kill -2 $pgid || kill -2 $pid) && sleep 5 && (kill -15 $pgid || kill $pid) && sleep 5 && (kill -9 $pgid || kill -9 $pid) &"
+    # If we didn't get EOF, we have to kill the poor defenseless program.
+    if { $got_eof } {
+	set pid -1
     }
-    # This will hang if the kill doesn't work. Nothin' to do, and it's not ok.
-    catch "close -i $spawn_id"
-    set r2 [catch "wait -i $spawn_id" wres]
+    set r2 [close_wait_program $spawn_id $pid wres]
     if { $id > 0 } {
 	set r2 [catch "close $id" res]
     } else {
@@ -210,9 +257,9 @@ proc local_exec { commandline inp outp timeout } {
     }
     verbose "output is $output status $status"
     if { $outp == "" || $outp == "|& cat" } {
-        return [list $status $output]
+	return [list $status $output]
     } else {
-        return [list $status ""]
+	return [list $status ""]
     }
 }
 
@@ -248,6 +295,10 @@ proc remote_exec { hostname program args } {
 	set outp ""
     }
 
+    # call_remote below gets its timeout from global variable, so set
+    # it here.
+    global timeout
+    set old_timeout $timeout
     # 300 is probably a lame default.
     if { [llength $args] > 3 } {
 	set timeout "[lindex $args 3]"
@@ -259,10 +310,22 @@ proc remote_exec { hostname program args } {
 
     # Run it locally if appropriate.
     if { ![is_remote $hostname] } {
-	return [local_exec "$program $pargs" $inp $outp $timeout]
+	set result [local_exec "$program $pargs" $inp $outp $timeout]
     } else {
-	return [call_remote "" exec $hostname $program $pargs $inp $outp]
+        if { [board_info $hostname exists remotedir] } {
+            set remotedir [board_info $hostname remotedir]
+	    # This is a bit too clever. Join cd $remotedir and
+	    # $program on the command line with ';' and not '&&'. When
+	    # called, $program may be mkdir to initially create the
+	    # remote directory, in which case cd would fail.
+            set program "test -d $remotedir && cd $remotedir; $program"
+        }
+	set result [call_remote "" exec $hostname $program $pargs $inp $outp]
     }
+
+    # Restore timeout.
+    set timeout $old_timeout
+    return $result
 }
 
 proc standard_exec { hostname args } {
@@ -308,20 +371,13 @@ proc standard_close { host } {
 		}
 	    }
 	}
-	if { $pid > 0 } {
-	    verbose "doing kill, pid is $pid"
-	    # This is very, very nasty. SH, instead of EXPECT, is used
-	    # to run this in the background since, on older CYGWINs, a
-	    # strange file I/O error occures.
-	    set pgid "-[join $pid { -}]"
-	    exec sh -c "exec > /dev/null 2>&1 && (kill -2 $pgid || kill -2 $pid) && sleep 5 && (kill $pgid || kill $pid) && sleep 5 && (kill -9 $pgid || kill -9 $pid) &"
-	}
-	verbose "pid is $pid"
-	catch "close -i $shell_id"
+
+	close_wait_program $shell_id $pid
+
 	if {[info exists oid]} {
 	    catch "close $oid"
 	}
-	catch "wait -i $shell_id"
+
 	unset board_info(${host},fileid)
 	verbose "Shell closed."
     }
@@ -340,7 +396,10 @@ proc remote_raw_binary { host } {
 }
 
 
-
+# Return value of this function depends on actual implementation of reboot that
+# will be used, in practice it is expected that remote_reboot returns 1 on
+# success and 0 on failure.
+#
 proc remote_reboot { host } {
     clone_output "\nRebooting ${host}\n"
     # FIXME: don't close the host connection, or all the remote
@@ -350,14 +409,18 @@ proc remote_reboot { host } {
     if {[board_info $host exists name]} {
 	set host [board_info $host name]
     }
-    if { [info proc ${host}_init] != "" } {
+    if { [info procs ${host}_init] != "" } {
 	${host}_init $host
     }
     return $status
 }
 
+# It looks like that this proc is never called, instead ${board}_reboot defined
+# in base-config.exp will be used because it has higher priority and
+# base-config.exp is always imported by runtest.
+#
 proc standard_reboot { host } {
-    return ""
+    return 1
 }
 #
 # Download file FILE to DEST. If the optional DESTFILE is specified,
@@ -393,6 +456,15 @@ proc remote_download { dest file args } {
 		return $destfile
 	    }
 	}
+    }
+    if { [board_info $dest exists remotedir] } {
+        set remotedir [board_info $dest remotedir]
+        set status [remote_exec $dest mkdir "-p $remotedir"]
+        if { [lindex $status 0] != 0 } {
+            perror "Couldn't create remote directory $remotedir on $dest"
+	    return ""
+        }
+        set destfile "$remotedir/$destfile"
     }
 
     return [call_remote "" download $dest $file $destfile]
@@ -489,8 +561,6 @@ proc standard_upload { dest srcfile destfile } {
     } else {
 	return $destfile
     }
-
-    return [rsh_upload $dest $srcfile $destfile]
 }
 
 # A standard procedure to call the appropriate function. It first looks
@@ -536,7 +606,7 @@ proc call_remote { type proc dest args } {
     if { $proc == "close" || $proc == "open" } {
 	foreach try "$high_prot [board_info $dest connect] telnet standard" {
 	    if { $try != "" } {
-		if { [info proc "${try}_${proc}"] != "" } {
+		if { [info procs "${try}_${proc}"] != "" } {
 		    verbose "call_remote calling ${try}_${proc}" 3
 		    set result [eval ${try}_${proc} \"$dest\" $args]
 		    break
@@ -544,7 +614,7 @@ proc call_remote { type proc dest args } {
 	    }
 	}
 	set ft "[board_info $dest file_transfer]"
-	if { [info proc "${ft}_${proc}"] != "" } {
+	if { [info procs "${ft}_${proc}"] != "" } {
 	    verbose "calling ${ft}_${proc} $dest $args" 3
 	    set result2 [eval ${ft}_${proc} \"$dest\" $args]
 	}
@@ -560,7 +630,7 @@ proc call_remote { type proc dest args } {
     foreach try "${high_prot} [board_info $dest file_transfer] [board_info $dest connect] telnet standard" {
 	verbose "looking for ${try}_${proc}" 4
 	if { $try != "" } {
-	    if { [info proc "${try}_${proc}"] != "" } {
+	    if { [info procs "${try}_${proc}"] != "" } {
 		verbose "call_remote calling ${try}_${proc}" 3
 		return [eval ${try}_${proc} \"$dest\" $args]
 	    }
@@ -570,7 +640,6 @@ proc call_remote { type proc dest args } {
 	return ""
     }
     error "No procedure for '$proc' in call_remote"
-    return -1
 }
 
 # Send FILE through the existing session established to DEST.
@@ -601,20 +670,20 @@ proc standard_transmit {dest file} {
     set chars 0
     set fd [open $file r]
     while { [gets $fd cur_line] >= 0 } {
-        set errmess ""
-        catch "send -i $shell_id \"$cur_line\r\"" errmess
-        if {[string match "write\(spawn_id=\[0-9\]+\):" $errmess]} {
-            perror "sent \"$cur_line\" got expect error \"$errmess\""
-            catch "close $fd"
-            return -1
-        }
+	set errmess ""
+	catch "send -i $shell_id \"$cur_line\r\"" errmess
+	if {[string match "write\(spawn_id=\[0-9\]+\):" $errmess]} {
+	    perror "sent \"$cur_line\" got expect error \"$errmess\""
+	    catch "close $fd"
+	    return -1
+	}
 	set chars [expr {$chars + ([string length $cur_line] * 10)}]
 	if { $chars > $baud } {
 	    sleep 1
 	    set chars 0
 	}
-        verbose "." 3
-        verbose "Sent $cur_line" 4
+	verbose "." 3
+	verbose "Sent $cur_line" 4
 	incr lines
     }
     verbose "$lines lines transmitted" 2
@@ -637,7 +706,7 @@ proc standard_send { dest string } {
     } else {
 	set shell_id [board_info $dest fileid]
 	verbose "shell_id in standard_send is $shell_id" 3
-        verbose "send -i [board_info $dest fileid] -- $string" 3
+	verbose "send -i [board_info $dest fileid] -- $string" 3
 	if {[catch "send -i [board_info $dest fileid] -- \$string" errorInfo]} {
 	    return "$errorInfo"
 	} else {
@@ -668,7 +737,7 @@ proc standard_file { dest op args } {
     set file [lindex $args 0]
     verbose "dest in proc standard_file is $dest" 3
     if { ![is_remote $dest] } {
-	switch $op {
+	switch -- $op {
 	    cmp {
 		set otherfile [lindex $args 1]
 		if { [file exists $file] && [file exists $otherfile]
@@ -705,28 +774,28 @@ proc standard_file { dest op args } {
 	    delete {
 		foreach x $args {
 		    if { [file exists $x] && [file isfile $x] } {
-			exec rm -f $x
+			file delete -force -- $x
 		    }
 		}
-		return
+		return {}
 	    }
 	}
-    }
-    switch $op {
-	exists {
-	    # mmmm, quotes.
-	    set status [remote_exec $dest "sh -c 'exit `\[ -f $file \]`'"]
-	    return [lindex $status 0]
-	}
-	delete {
-	    set file ""
-	    # Allow multiple files to be deleted at once.
-	    foreach x $args {
-		append file " $x"
+    } else {
+	switch -- $op {
+	    exists {
+		set status [remote_exec $dest "test -f $file"]
+		return [expr {[lindex $status 0] == 0}]
 	    }
-	    verbose "remote_file deleting $file"
-	    set status [remote_exec $dest "rm -f $file"]
-	    return [lindex $status 0]
+	    delete {
+		set file ""
+		# Allow multiple files to be deleted at once.
+		foreach x $args {
+		    append file " $x"
+		}
+		verbose "remote_file deleting $file"
+		set status [remote_exec $dest "rm -f $file"]
+		return [lindex $status 0]
+	    }
 	}
     }
 }
@@ -844,13 +913,13 @@ proc standard_spawn { dest commandline } {
     global board_info
 
     if {![board_info $dest exists rsh_prog]} {
-        if { [which remsh] != 0 } {
-            set RSH remsh
-        } else {
-            set RSH rsh
-        }
+	if { [which remsh] != 0 } {
+	    set RSH remsh
+	} else {
+	    set RSH rsh
+	}
     } else {
-        set RSH [board_info $dest rsh_prog]
+	set RSH [board_info $dest rsh_prog]
     }
 
     if {[board_info $dest exists hostname]} {
@@ -860,9 +929,9 @@ proc standard_spawn { dest commandline } {
     }
 
     if {![board_info $dest exists username]} {
-        spawn $RSH $remote $commandline
+	spawn $RSH $remote $commandline
     } else {
-        spawn $RSH -l [board_info $dest username] $remote $commandline
+	spawn $RSH -l [board_info $dest username] $remote $commandline
     }
 
     set board_info($dest,fileid) $spawn_id
@@ -977,6 +1046,8 @@ proc remote_raw_load { dest prog args } {
 # remote_download and remote_exec to load and execute the program.
 #
 proc standard_load { dest prog args } {
+    global board_info
+
     if { [llength $args] > 0 } {
 	set pargs [lindex $args 0]
     } else {
@@ -997,7 +1068,10 @@ proc standard_load { dest prog args } {
     }
 
     if {[is_remote $dest]} {
-	set remotefile "/tmp/[file tail $prog].[pid]"
+        if {![board_info $dest exists remotedir]} {
+            set board_info($dest,remotedir) "/tmp/runtest.[pid]"
+        }
+	set remotefile [file tail $prog]
 	set remotefile [remote_download $dest $prog $remotefile]
 	if { $remotefile == "" } {
 	    verbose -log "Download of $prog to [board_info $dest name] failed." 3
@@ -1069,17 +1143,15 @@ proc standard_wait { dest timeout } {
     remote_expect $dest $timeout {
 	-re ".+" {
 	    append output $expect_out(buffer)
-	    if { [string length $output] > 512000 } {
-		remote_close $dest
-		set status 1
-	    } else {
-		exp_continue -continue_timer
-	    }
+	    exp_continue -continue_timer
 	}
 	timeout {
 	    warning "program timed out."
 	}
 	eof {
+	    # There may be trailing characters in the buffer.
+	    # Append them, too.
+	    append output $expect_out(buffer)
 	    if {[board_info $dest exists fileid_origid]} {
 		global board_info
 
@@ -1117,7 +1189,7 @@ proc standard_wait { dest timeout } {
     return [list $status $output]
 }
 
-# This checks the value cotained in the variable named "variable" in
+# This checks the value contained in the variable named "variable" in
 # the calling procedure for output from the status wrapper and returns
 # a non-negative value if it exists; otherwise, it returns -1. The
 # output from the wrapper is removed from the variable.
@@ -1138,7 +1210,7 @@ proc check_for_board_status  { variable } {
     if {[regexp "(^|\[\r\n\])\\*\\*\\* EXIT code" $output]} {
 	regsub "^.*\\*\\*\\* EXIT code " $output "" result
 	regsub "\[\r\n\].*$" $result "" result
-        regsub -all "(^|\[\r\n\]|\r\n)\\*\\*\\* EXIT code \[^\r\n\]*(\[\r\n\]\[\r\n\]?|$)" $output "" output
+	regsub -all "(^|\[\r\n\]|\r\n)\\*\\*\\* EXIT code \[^\r\n\]*(\[\r\n\]\[\r\n\]?|$)" $output "" output
 	regsub "^\[^0-9\]*" $result "" result
 	regsub "\[^0-9\]*$" $result "" result
 	verbose "got board status $result" 3
@@ -1244,12 +1316,14 @@ proc remote_expect { board timeout args } {
     }
 
     if {$code == 1} {
-        if {[info exists string]} {send_user "ERROR OCCURED: $errorInfo $errorCode $string"}
+	if {[info exists string]} {
+	    perror "$errorInfo $errorCode $string"
+	}
 
 	if { $error_sect != "" } {
 	    set code [catch {uplevel $error_sect} string]
 	} else {
-	    warning "remote_expect statement without a default case?!"
+	    warning "remote_expect statement without a default case"
 	    return
 	}
     }

@@ -39,15 +39,15 @@
 # dg-do do-what-keyword [{ target/xfail selector }]
 #	`do-what-keyword' is tool specific and is passed unchanged to
 #	${tool}-dg-test.  An example is gcc where `keyword' can be any of:
-#	preprocess|compile|assemble|link|run
+#	preprocess | compile | assemble | link | run
 #	and will do one of: produce a .i, produce a .s, produce a .o,
 #	produce an a.out, or produce an a.out and run it (the default is
-#	compile).
+#	'compile').
 #
 # dg-error regexp comment [{ target/xfail selector } [{.|0|linenum}]]
 #	indicate an error message <regexp> is expected on this line
 #	(the test fails if it doesn't occur)
-#	Linenum=0 for general tool messages (eg: -V arg missing).
+#	linenum=0 for general tool messages (eg: -V arg missing).
 #	"." means the current line.
 #
 # dg-warning regexp comment [{ target/xfail selector } [{.|0|linenum}]]
@@ -72,8 +72,8 @@
 #	indicate the expected output of the program is <regexp>
 #	(there may be multiple occurrences of this, they are concatenated)
 #
-# dg-final { tcl code }
-#	add some tcl code to be run at the end
+# dg-final { tcl script }
+#	add some Tcl script to be run at the end
 #	(there may be multiple occurrences of this, they are concatenated)
 #	(unbalanced braces must be \-escaped)
 #
@@ -96,9 +96,8 @@
 #       [ ... some complicated code ... ]
 #	return a; /* { dg-build "fatal" "ran out of spill regs" { xfail i386-*-* } } */
 #
-# In this example, the compiler use to crash on the "return a;" for some
-# target and that it still does crash on i386-*-*.  Admittedly, this is a
-# contrived example.
+# In this contrived example, the compiler used to crash on the "return
+# a;" for some target and it still does crash on i386-*-*.
 #
 # ??? It might be possible to add additional optional arguments by having
 # something like: { dg-error ".*syntax.*" "syntax error" { { foo 1 } ... } }
@@ -116,7 +115,7 @@
 #	pattern matching.  This also gives the tool an opportunity to review
 #	the output and check for any conditions which indicate an "untested"
 #	or "unresolved" state.  An example is if a testcase is too big and
-#	fills all available ram (which can happen for 16 bit cpus).  The
+#	fills all available ram (which can happen for 16 bit CPUs).  The
 #	result is either the pruned text or
 #	"::untested|unresolved|unsupported::message"
 #	(eg: "::unsupported::memory full").
@@ -190,16 +189,10 @@ proc dg-get-options { prog } {
     set tmp [grep $prog "{\[ \t\]\+dg-\[-a-z\]\+\[ \t\]\+.*\[ \t\]\+}" line]
     if {![string match "" $tmp]} {
 	foreach i $tmp {
-	    #send_user "Found: $i\n"
-	    # FIXME: When to use "+" and "\+" isn't clear.
-	    # Seems to me it took awhile to get this to work.
-	    regexp "(\[0-9\]\+)\[ \t\]\+{\[ \t\]+(dg-\[-a-z\]+)\[ \t\]\+(.*)\[ \t\]+}\[^\}\]*(\n|$)" $i i line cmd args
-	    #send_user "Found: $cmd $line $args\n"
+	    regexp "(\[0-9\]+)\[ \t\]+{\[ \t\]+(dg-\[-a-z\]+)\[ \t\]+(.*)\[ \t\]+}\[^\}\]*(\n|$)" $i i line cmd args
 	    append result " { $cmd $line $args }"
 	}
     }
-
-    #send_user "Returning: $result\n"
     return $result
 }
 
@@ -219,8 +212,6 @@ proc dg-process-target { selector } {
     set isnative [isnative]
     set triplet_match 0
 
-    #send_user "dg-process-target: $selector\n"
-
     set selector [string trim $selector]
     if {[regexp "^xfail " $selector]} {
 	set what xfail
@@ -232,11 +223,8 @@ proc dg-process-target { selector } {
 	error "syntax error in target selector \"$selector\""
     }
 
-    # ??? This should work but it doesn't.  tcl bug?
-    #if [regexp "^${what}(( \[^ \]+-\[^ \]+-\[^ \]+)|( native))+$" $selector tmp selector]
     if {[regexp "^${what}( \[^ \]+-\[^ \]+-\[^ \]+| native)+$" $selector]} {
 	regsub "^${what} " $selector "" selector
-	#send_user "selector: $selector\n"
 	foreach triplet $selector {
 	    if {[string match $triplet $target_triplet]} {
 		set triplet_match 1
@@ -261,11 +249,10 @@ proc dg-process-target { selector } {
 # Tests for optional arguments are coded with ">=" to simplify adding new ones.
 #
 proc dg-prms-id { args } {
-    global prms_id	;# this is a testing framework variable
+    global prms_id
 
     if { [llength $args] > 2 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     set prms_id [lindex $args 1]
@@ -283,11 +270,10 @@ proc dg-options { args } {
 
     if { [llength $args] > 3 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     if { [llength $args] >= 3 } {
-	switch [dg-process-target [lindex $args 2]] {
+	switch -- [dg-process-target [lindex $args 2]] {
 	    "S" { set extra-tool-flags [lindex $args 1] }
 	    "N" { }
 	    "F" { error "[lindex $args 0]: `xfail' not allowed here" }
@@ -310,14 +296,14 @@ proc dg-do { args } {
 
     if { [llength $args] > 3 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
+    set doaction [lindex $args 1]
     set selected [lindex ${do-what} 1]	;# selected? (""/S/N)
     set expected [lindex ${do-what} 2]	;# expected to pass/fail (P/F)
 
     if { [llength $args] >= 3 } {
-	switch [dg-process-target [lindex $args 2]] {
+	switch -- [dg-process-target [lindex $args 2]] {
 	    "S" {
 		set selected "S"
 	    }
@@ -330,6 +316,8 @@ proc dg-do { args } {
 		# are OR'd together).
 		if { $selected != "S" } {
 		    set selected "N"
+		} else {
+		    set doaction [lindex ${do-what} 0]
 		}
 	    }
 	    "F" { set expected "F" }
@@ -345,7 +333,7 @@ proc dg-do { args } {
 	set expected P
     }
 
-    switch [lindex $args 1] {
+    switch -- [lindex $args 1] {
 	"preprocess" { }
 	"compile" { }
 	"assemble" { }
@@ -355,7 +343,7 @@ proc dg-do { args } {
 	    error "[lindex $args 0]: syntax error"
 	}
     }
-    set do-what [list [lindex $args 1] $selected $expected]
+    set do-what [list $doaction $selected $expected]
 }
 
 proc dg-error { args } {
@@ -363,12 +351,11 @@ proc dg-error { args } {
 
     if { [llength $args] > 5 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     set xfail ""
     if { [llength $args] >= 4 } {
-	switch [dg-process-target [lindex $args 3]] {
+	switch -- [dg-process-target [lindex $args 3]] {
 	    "F" { set xfail "X" }
 	    "P" { set xfail "" }
 	    "N" {
@@ -379,7 +366,7 @@ proc dg-error { args } {
     }
 
     if { [llength $args] >= 5 } {
-	switch [lindex $args 4] {
+	switch -- [lindex $args 4] {
 	    "." { set line [dg-format-linenum [lindex $args 0]] }
 	    "0" { set line "" }
 	    "default" { set line [dg-format-linenum [lindex $args 4]] }
@@ -396,12 +383,11 @@ proc dg-warning { args } {
 
     if { [llength $args] > 5 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     set xfail ""
     if { [llength $args] >= 4 } {
-	switch [dg-process-target [lindex $args 3]] {
+	switch -- [dg-process-target [lindex $args 3]] {
 	    "F" { set xfail "X" }
 	    "P" { set xfail "" }
 	    "N" {
@@ -412,7 +398,7 @@ proc dg-warning { args } {
     }
 
     if { [llength $args] >= 5 } {
-	switch [lindex $args 4] {
+	switch -- [lindex $args 4] {
 	    "." { set line [dg-format-linenum [lindex $args 0]] }
 	    "0" { set line "" }
 	    "default" { set line [dg-format-linenum [lindex $args 4]] }
@@ -429,12 +415,11 @@ proc dg-bogus { args } {
 
     if { [llength $args] > 5 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     set xfail ""
     if { [llength $args] >= 4 } {
-	switch [dg-process-target [lindex $args 3]] {
+	switch -- [dg-process-target [lindex $args 3]] {
 	    "F" { set xfail "X" }
 	    "P" { set xfail "" }
 	    "N" {
@@ -445,7 +430,7 @@ proc dg-bogus { args } {
     }
 
     if { [llength $args] >= 5 } {
-	switch [lindex $args 4] {
+	switch -- [lindex $args 4] {
 	    "." { set line [dg-format-linenum [lindex $args 0]] }
 	    "0" { set line "" }
 	    "default" { set line [dg-format-linenum [lindex $args 4]] }
@@ -462,12 +447,11 @@ proc dg-build { args } {
 
     if { [llength $args] > 4 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     set xfail ""
     if { [ llength $args] >= 4 } {
-	switch [dg-process-target [lindex $args 3]] {
+	switch -- [dg-process-target [lindex $args 3]] {
 	    "F" { set xfail "X" }
 	    "P" { set xfail "" }
 	    "N" {
@@ -485,11 +469,10 @@ proc dg-excess-errors { args } {
 
     if { [llength $args] > 3 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     if { [llength $args] >= 3 } {
-	switch [dg-process-target [lindex $args 2]] {
+	switch -- [dg-process-target [lindex $args 2]] {
 	    "F" { set excess-errors-flag 1 }
 	    "S" { set excess-errors-flag 1 }
 	}
@@ -517,14 +500,13 @@ proc dg-output { args } {
 
     if { [llength $args] > 3 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
     # Allow target dependent output.
 
     set expected [lindex ${output-text} 0]
     if { [llength $args] >= 3 } {
-	switch [dg-process-target [lindex $args 2]] {
+	switch -- [dg-process-target [lindex $args 2]] {
 	    "N" { return }
 	    "S" { }
 	    "F" { set expected "F" }
@@ -546,10 +528,8 @@ proc dg-final { args } {
 
     if { [llength $args] > 2 } {
 	error "[lindex $args 0]: too many arguments"
-	return
     }
 
-    #send_user "dg-final: $args\n"
     append final-code "[lindex $args 1]\n"
 }
 
@@ -564,12 +544,11 @@ proc dg-init { } {
 
 # dg-runtest -- simple main loop useful to most testsuites
 #
-# FLAGS is a set of options to always pass.
-# DEFAULT_EXTRA_FLAGS is a set of options to pass if the testcase doesn't
-# specify any (with dg-option).
-# ??? We're flipping between "flag" and "option" here.
+# OPTIONS is a set of options to always pass.
+# DEFAULT_EXTRA_OPTIONS is a set of options to pass if the testcase
+# doesn't specify any (with dg-option).
 
-proc dg-runtest { testcases flags default-extra-flags } {
+proc dg-runtest { testcases options default-extra-options } {
     global runtests
 
     foreach testcase $testcases {
@@ -578,19 +557,19 @@ proc dg-runtest { testcases flags default-extra-flags } {
 	    continue
 	}
 	verbose "Testing [file tail [file dirname $testcase]]/[file tail $testcase]"
-	dg-test $testcase $flags ${default-extra-flags}
+	dg-test $testcase $options ${default-extra-options}
     }
 }
 
 # dg-trim-dirname -- rip DIR_NAME out of FILE_NAME
 #
 # Syntax: dg-trim-dirname dir_name file_name
-# We need to go through this contorsion in order to properly support
+# We need to go through this contortion in order to properly support
 # directory-names which might have embedded regexp special characters.
 #
 proc dg-trim-dirname { dir_name file_name } {
     set special_character "\[\?\+\-\.\(\)\$\|\]"
-    regsub -all $special_character $dir_name "\\\\&" dir_name
+    regsub -all -- $special_character $dir_name "\\\\&" dir_name
     regsub "^$dir_name/?" $file_name "" file_name
     return $file_name
 }
@@ -608,7 +587,7 @@ proc dg-test { args } {
     global dg-do-what-default dg-interpreter-batch-mode dg-linenum-format
     global errorCode errorInfo
     global tool
-    global srcdir		;# eg: /calvin/dje/build/gcc/./testsuite/
+    global srcdir
     global host_triplet target_triplet
 
     set keep 0
@@ -672,10 +651,10 @@ proc dg-test { args } {
     # Define our own "special function" `unknown' so we catch spelling errors.
     # But first rename the existing one so we can restore it afterwards.
     if { [info procs dg-save-unknown] == [list] } {
-        rename unknown dg-save-unknown
-        proc unknown { args } {
+	rename unknown dg-save-unknown
+	proc unknown { args } {
 	    return -code error "unknown dg option: $args"
-        }
+	}
     }
 
     set tmp [dg-get-options $prog]
@@ -690,18 +669,15 @@ proc dg-test { args } {
 	    } else {
 		perror "$name: $errmsg for \"$op\"\n"
 	    }
-	    # ??? The call to unresolved here is necessary to clear `errcnt'.
-	    # What we really need is a proc like perror that doesn't set errcnt.
-	    # It should also set exit_status to 1.
-	    unresolved "$name: $errmsg for \"$op\""
+	    perror "$name: $errmsg for \"$op\"" 0
 	    return
 	}
     }
 
     # Restore normal error handling.
     if { [info procs dg-save-unknown] != [list] } {
-        rename unknown ""
-        rename dg-save-unknown unknown
+	rename unknown ""
+	rename dg-save-unknown unknown
     }
 
     # If we're not supposed to try this test on this target, we're done.
@@ -723,10 +699,6 @@ proc dg-test { args } {
     set comp_output [lindex $results 0]
     set output_file [lindex $results 1]
 
-    #send_user "\nold_dejagnu.exp: comp_output1 = :$comp_output:\n\n"
-    #send_user "\nold_dejagnu.exp: message = :$message:\n\n"
-    #send_user "\nold_dejagnu.exp: message length = [llength $message]\n\n"
-
     foreach i ${dg-messages} {
 	verbose "Scanning for message: $i" 4
 
@@ -735,21 +707,19 @@ proc dg-test { args } {
 	set line [lindex $i 0]
 	set pattern [lindex $i 2]
 	set comment [lindex $i 3]
-	#send_user "Before:\n$comp_output\n"
 	if {[regsub -all "(^|\n)(\[^\n\]+$line\[^\n\]*($pattern)\[^\n\]*\n?)+" $comp_output "\n" comp_output]} {
-            set comp_output [string trimleft $comp_output]
+	    set comp_output [string trimleft $comp_output]
 	    set ok pass
 	    set uhoh fail
 	} else {
 	    set ok fail
 	    set uhoh pass
 	}
-	#send_user "After:\n$comp_output\n"
 
 	# $line will either be a formatted line number or a number all by
 	# itself.  Delete the formatting.
 	scan $line ${dg-linenum-format} line
-	switch [lindex $i 1] {
+	switch -- [lindex $i 1] {
 	    "ERROR" {
 		$ok "$name $comment (test for errors, line $line)"
 	    }
@@ -777,17 +747,14 @@ proc dg-test { args } {
 	    "EXEC" { }
 	    "XEXEC" { }
 	}
-	#send_user "\nold_dejagnu.exp: comp_output2= :$comp_output:\n\n"
     }
-    #send_user "\nold_dejagnu.exp: comp_output3 = :$comp_output:\n\n"
 
     # Remove messages from the tool that we can ignore.
-    #send_user "comp_output: $comp_output\n"
     set comp_output [prune_warnings $comp_output]
 
-    if { [info proc ${tool}-dg-prune] != "" } {
+    if { [info procs ${tool}-dg-prune] != "" } {
 	set comp_output [${tool}-dg-prune $target_triplet $comp_output]
-	switch -glob $comp_output {
+	switch -glob -- $comp_output {
 	    "::untested::*" {
 		regsub "::untested::" $comp_output "" message
 		untested "$name: $message"
@@ -809,7 +776,6 @@ proc dg-test { args } {
     # See if someone forgot to delete the extra lines.
     regsub -all "\n+" $comp_output "\n" comp_output
     regsub "^\n+" $comp_output "" comp_output
-    #send_user "comp_output: $comp_output\n"
 
     # Don't do this if we're testing an interpreter.
     # FIXME: why?
@@ -837,7 +803,6 @@ proc dg-test { args } {
 	    set result [${tool}_load $output_file]
 	    set status [lindex $result 0]
 	    set output [lindex $result 1]
-	    #send_user "After exec, status: $status\n"
 	    if { [lindex ${dg-do-what} 2] == "F" } {
 		setup_xfail "*-*-*"
 	    }
@@ -845,16 +810,16 @@ proc dg-test { args } {
 		pass "$name execution test"
 		verbose "Exec succeeded." 3
 		if { [llength ${dg-output-text}] > 1 } {
-		    #send_user "${dg-output-text}\n"
 		    if { [lindex ${dg-output-text} 0] == "F" } {
 			setup_xfail "*-*-*"
 		    }
 		    set texttmp [lindex ${dg-output-text} 1]
-		    if { ![regexp $texttmp ${output}] } {
-			fail "$name output pattern test, is ${output}, should match $texttmp"
+		    if { ![regexp -- $texttmp ${output}] } {
+			fail "$name output pattern test"
+			send_log "Output was:\n${output}\nShould match:\n$texttmp\n"
 			verbose "Failed test for output pattern $texttmp" 3
 		    } else {
-			pass "$name output pattern test, $texttmp"
+			pass "$name output pattern test"
 			verbose "Passed test for output pattern $texttmp" 3
 		    }
 		    unset texttmp
@@ -885,11 +850,7 @@ proc dg-test { args } {
 	verbose "Running dg-final tests." 3
 	verbose "dg-final-proc:\n[info body dg-final-proc]" 4
 	if {[catch "dg-final-proc $prog" errmsg]} {
-	    perror "$name: error executing dg-final: $errmsg"
-	    # ??? The call to unresolved here is necessary to clear `errcnt'.
-	    # What we really need is a proc like perror that doesn't set errcnt.
-	    # It should also set exit_status to 1.
-	    unresolved "$name: error executing dg-final: $errmsg"
+	    perror "$name: error executing dg-final: $errmsg" 0
 	}
     }
 
@@ -897,7 +858,7 @@ proc dg-test { args } {
     # When testing an interpreter, we don't compile something and leave an
     # output file.
     if { ! ${keep} && ${dg-interpreter-batch-mode} == 0 } {
-	catch "exec rm -f $output_file"
+	catch "file delete -force -- $output_file"
     }
 }
 

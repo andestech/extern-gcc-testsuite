@@ -23,11 +23,12 @@
 # This file is sourced by runtest.exp, so they are usable by any test
 # script.
 
+
 # Gets the directories in a directory, or in a directory tree.
 #     args: the first is the dir to look in, the next
 #         is the pattern to match. It
 #         defaults to *. Patterns are csh style
-#   	  globbing rules
+#	  globbing rules
 #     options: -all  search the tree recursively
 #     returns: a list of dirs or NULL; the root directory is not returned.
 #
@@ -54,6 +55,8 @@ proc getdirs { args } {
 		    "testsuite" -
 		    "config" -
 		    "lib" -
+		    ".git" -
+		    ".svn" -
 		    "CVS" -
 		    "RCS" -
 		    "SCCS" {
@@ -71,7 +74,7 @@ proc getdirs { args } {
 		    }
 		}
 	    }
-	}	
+	}
     } else {
 	perror "$tmp"
 	return ""
@@ -83,6 +86,7 @@ proc getdirs { args } {
 	return $dirs
     }
 }
+
 
 # Finds paths of all non-directory files, recursively, whose names match
 # a pattern.  Certain directory name are not searched (see proc getdirs).
@@ -113,6 +117,7 @@ proc find { rootdir pattern } {
     return $files
 }
 
+
 # Search the path for a file. This is basically a version of the BSD
 # Unix which(1) utility. This procedure depends on the shell
 # environment variable $PATH. It returns 0 if $PATH does not exist or
@@ -125,24 +130,33 @@ proc which { file } {
     # strip off any extraneous arguments (like flags to the compiler)
     set file [lindex $file 0]
 
-    # if it exists then the path must be OK
-    # ??? What if $file has no path and "." isn't in $PATH?
-    if {[file exists $file]} {
-	return $file
+    # if the filename has a path component, then the file must exist
+    if {[llength [file split $file]] > 1} {
+	verbose "Checking $file" 2
+	if {[file exists $file] && [file executable $file]} {
+	    verbose "file $file is executable" 2
+	    return [file normalize $file]
+	} else {
+	    return 0
+	}
     }
+
+    # Otherwise the file must exist in the PATH
     if {[info exists env(PATH)]} {
 	set path [split $env(PATH) ":"]
     } else {
 	return 0
     }
 
-    foreach i $path {
-	verbose "Checking against $i" 3
-	if {[file exists [file join $i $file]]} {
-	    if {[file executable [file join $i $file]]} {
-		return [file join $i $file]
+    foreach dir $path {
+	verbose "Checking $dir for $file" 3
+	set filename [file normalize [file join $dir $file]]
+	if {[file exists $filename]} {
+	    if {[file executable $filename]} {
+		verbose "Choosing $filename" 2
+		return [file normalize $filename]
 	    } else {
-		warning "[file join $i $file] exists but is not an executable"
+		warning "file $filename exists but is not executable"
 	    }
 	}
     }
@@ -181,7 +195,7 @@ proc grep { args } {
 	if {[regexp -- "$pattern" $cur_line match]} {
 	    if {![string match "" $options]} {
 		foreach opt $options {
-		    switch $opt {
+		    switch -- $opt {
 			"line" {
 			    lappend grep_out [concat $i $match]
 			}
@@ -204,12 +218,12 @@ proc grep { args } {
 #
 # Remove elements based on patterns. elements are delimited by spaces.
 # pattern is the pattern to look for using glob style matching
-# list is the list to check against
+# lst is the list to check against
 # returns the new list
 #
-proc prune { list pattern } {
+proc prune { lst pattern } {
     set tmp {}
-    foreach i $list {
+    foreach i $lst {
 	verbose "Checking pattern \"$pattern\" against $i" 3
 	if {![string match $pattern $i]} {
 	    lappend tmp $i
@@ -220,66 +234,14 @@ proc prune { list pattern } {
     return $tmp
 }
 
-#
-# Attempt to kill a process that you started on the local machine.
-#
-proc slay { name } {
-    set in [open [concat "|ps"] r]
-    while {[gets $in line]>-1} {
-	if {![string match "*expect*slay*" $line]} {
-	    if {[string match "*$name*" $line]} {
-		set pid [lindex $line 0]
-		catch "exec kill -9 $pid"
-		verbose "Killing $name, pid = $pid\n"
-	    }
-	}
-    }
-    close $in
-}
 
-#
-# Convert a relative path to an absolute one on the local machine.
-#
-proc absolute { path } {
-    if {[string match "." $path]} {
-        return [pwd]
-    }
-
-    set basedir [pwd]
-    cd $path
-    set path [pwd]
-    cd $basedir
-    return $path
-}
-
-#
-# Source a file and trap any real errors. This ignores extraneous
-# output. returns a 1 if there was an error, otherwise it returns 0.
-#
-proc psource { file } {
-    global errorInfo
-    global errorCode
-
-    unset errorInfo
-    if {[file exists $file]} {
-	catch "source $file"
-	if {[info exists errorInfo]} {
-	    send_error "ERROR: errors in $file\n"
-	    send_error "$errorInfo"
-	    return 1
-	}
-    }
-    return 0
-}
-
-#
 # Check if a testcase should be run or not
 #
 # RUNTESTS is a copy of global `runtests'.
 #
 # This proc hides the details of global `runtests' from the test scripts, and
 # implements uniform handling of "script arguments" where those arguments are
-# file names (ie: the "foo" in make check RUNTESTFLAGS="bar.exp=foo").
+# file names (eg, "foo.c" in make check RUNTESTFLAGS="bar.exp=foo.c").
 # "glob" style expressions are supported as well as multiple files (with
 # spaces between them).
 # Eg: RUNTESTFLAGS="bar.exp=foo1.c foo2.c foo3*.c bar/baz*.c"
@@ -299,101 +261,85 @@ proc runtest_file_p { runtests testcase } {
     return 1
 }
 
-#
-# Delete various system verbosities from TEXT on SYSTEM
-#
-# An example is:
-# ld.so: warning: /usr/lib/libc.so.1.8.1 has older revision than expected 9
-#
-# SYSTEM is typical $target_triplet or $host_triplet.
-#
 
+# Compares two files line-by-line just like the Unix diff(1) utility.
 #
-# Compares two files line-by-line
-#     returns 1 it the files match,
-#     returns 0 if there was a file error,
-#     returns -1 if they didn't match.
+# Returns 1 if the files match,
+#         0 if there was a file error,
+#         -1 if they did not match.
 #
 proc diff { file_1 file_2 } {
     set eof -1
     set differences 0
 
     if {[file exists ${file_1}]} {
-        set file_a [open ${file_1} r]
-        fconfigure $file_a -encoding binary
+	set file_a [open ${file_1} r]
+	fconfigure $file_a -encoding binary
     } else {
-        warning "${file_1} doesn't exist"
-        return 0
+	warning "${file_1} doesn't exist"
+	return 0
     }
 
     if {[file exists ${file_2}]} {
-        set file_b [open ${file_2} r]
-        fconfigure $file_b -encoding binary
+	set file_b [open ${file_2} r]
+	fconfigure $file_b -encoding binary
     } else {
-        warning "${file_2} doesn't exist"
-        return 0
+	warning "${file_2} doesn't exist"
+	return 0
     }
 
-    verbose "# Diff'ing: ${file_1} ${file_2}\n" 1
+    verbose "# Diff'ing: ${file_1} ${file_2}" 1
 
     set list_a ""
     while { [gets ${file_a} line] != ${eof} } {
-        if {[regexp "^#.*$" ${line}]} {
-            continue
-        } else {
-            lappend list_a ${line}
-        }
+	if {[regexp "^#.*$" ${line}]} {
+	    continue
+	} else {
+	    lappend list_a ${line}
+	}
     }
     close ${file_a}
 
     set list_b ""
     while { [gets ${file_b} line] != ${eof} } {
-        if {[regexp "^#.*$" ${line}]} {
-            continue
-        } else {
-            lappend list_b ${line}
-        }
+	if {[regexp "^#.*$" ${line}]} {
+	    continue
+	} else {
+	    lappend list_b ${line}
+	}
     }
     close ${file_b}
+
     for { set i 0 } { $i < [llength $list_a] } { incr i } {
-        set line_a [lindex ${list_a} ${i}]
-        set line_b [lindex ${list_b} ${i}]
+	set line_a [lindex ${list_a} ${i}]
+	set line_b [lindex ${list_b} ${i}]
 
-	#        verbose "\t${file_1}: ${i}: ${line_a}\n" 3
-	#        verbose "\t${file_2}: ${i}: ${line_b}\n" 3
-        if {[string compare ${line_a} ${line_b}]} {
-	    verbose "line #${i}\n" 2
-            verbose "\< ${line_a}\n" 2
-            verbose "\> ${line_b}\n" 2
-
-	    send_log "line #${i}\n"
-            send_log "\< ${line_a}\n"
-            send_log "\> ${line_b}\n"
-
-            set differences -1
-        }
+	if {[string compare ${line_a} ${line_b}]} {
+	    verbose -log "line #${i}" 2
+	    verbose -log "\< ${line_a}" 2
+	    verbose -log "\> ${line_b}" 2
+	    set differences -1
+	}
     }
 
     if { $differences == -1 || [llength ${list_a}] != [llength ${list_b}] } {
 	verbose "Files not the same" 2
-        set differences -1
+	set differences -1
     } else {
 	verbose "Files are the same" 2
 	set differences 1
     }
-    return ${differences}
+    return $differences
 }
 
-#
+
 # Set an environment variable
 #
 proc setenv { var val } {
     global env
-
     set env($var) $val
 }
 
-#
 # Unset an environment variable
 #
 proc unsetenv { var } {
@@ -401,16 +347,14 @@ proc unsetenv { var } {
     unset env($var)
 }
 
-#
+
 # Get a value from an environment variable
 #
 proc getenv { var } {
     global env
-
     if {[info exists env($var)]} {
 	return $env($var)
     } else {
 	return ""
     }
 }
-

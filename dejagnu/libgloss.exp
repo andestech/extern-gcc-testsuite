@@ -1,5 +1,6 @@
 # Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001
-# 2002, 2003, 2005, 2006, 2007, 2008, 2009, 2010 Free Software Foundation, Inc.
+# 2002, 2003, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
+# 2015, 2016 Free Software Foundation, Inc.
 #
 # This file is part of DejaGnu.
 #
@@ -455,7 +456,7 @@ proc get_multilibs { args } {
 
     # extract the options and their directory names as know by gcc
     foreach i "[exec $compiler --print-multi-lib]" {
-    	if {$extra != ""} {
+	if {$extra != ""} {
 	    # string trimright would do the wrong thing if we included
 	    # the leading @@ in $extra
 	    set i [string trimright $i $extra]
@@ -474,9 +475,9 @@ proc get_multilibs { args } {
 	if { [llength $args] > 0 } {
 	    set override_opt [lindex $args 0]
 	    foreach j $opts {
-	        if {$j == $override_opt} {
-	    	    set mopts $override_opt
-	        }
+		if {$j == $override_opt} {
+		    set mopts $override_opt
+		}
 	    }
 	}
     }
@@ -668,9 +669,12 @@ proc find_g++ {} {
     global tool_root_dir
 
     if {![is_remote host]} {
-	set file [lookfor_file $tool_root_dir g++]
+	set file [lookfor_file $tool_root_dir xg++]
 	if { $file == "" } {
-	    set file [lookfor_file $tool_root_dir gcc/g++]
+	    set file [lookfor_file $tool_root_dir gcc/xg++]
+	}
+	if { $file == "" } {
+	    set file [lookfor_file $tool_root_dir g++]
 	}
 	if { $file != "" } {
 	    set CC "$file -B[file dirname $file]/"
@@ -679,6 +683,25 @@ proc find_g++ {} {
 	}
     } else {
 	set CC [transform g++]
+    }
+    return $CC
+}
+
+proc find_gdc {} {
+    global tool_root_dir
+
+    if {![is_remote host]} {
+	set file [lookfor_file $tool_root_dir gdc]
+	if { $file == "" } {
+	    set file [lookfor_file $tool_root_dir gcc/gdc]
+	}
+	if { $file != "" } {
+	    set CC "$file -B[file dirname $file]/"
+	} else {
+	    set CC [transform gdc]
+	}
+    } else {
+	set CC [transform gdc]
     }
     return $CC
 }
@@ -698,6 +721,25 @@ proc find_g77 {} {
 	}
     } else {
 	set CC [transform g77]
+    }
+    return $CC
+}
+
+proc find_gfortran {} {
+    global tool_root_dir
+
+    if {![is_remote host]} {
+	set file [lookfor_file $tool_root_dir gfortran]
+	if { $file == "" } {
+	    set file [lookfor_file $tool_root_dir gcc/gfortran]
+	}
+	if { $file != "" } {
+	    set CC "$file -B[file dirname $file]/"
+	} else {
+	    set CC [transform gfortran]
+	}
+    } else {
+	set CC [transform gfortran]
     }
     return $CC
 }
@@ -729,7 +771,7 @@ proc find_nm {} {
     if {![is_remote host]} {
 	set NM [lookfor_file $tool_root_dir nm-new]
 	if {$NM == ""} {
- 	    set NM [lookfor_file $tool_root_dir binutils/nm-new]
+	    set NM [lookfor_file $tool_root_dir binutils/nm-new]
 	}
     }
     if { $NM == ""} {

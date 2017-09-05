@@ -1,6 +1,6 @@
 # runtest.exp -- Test framework driver
 # Copyright (C) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-# 2001, 2002, 2003 Free Software Foundation, Inc.
+# 2001, 2002, 2003, 2012 Free Software Foundation, Inc.
 #
 # This file is part of DejaGnu.
 #
@@ -20,19 +20,18 @@
 
 # This file was written by Rob Savoye <rob@welcomehome.org>.
 
-set frame_version	1.5
+set frame_version	1.6
 if {![info exists argv0]} {
     send_error "Must use a version of Expect greater than 5.0\n"
     exit 1
 }
 
-#
 # trap some signals so we know whats happening. These definitions are only
 # temporary until we read in the library stuff
 #
-trap { send_user "\nterminated\n";             exit 1 } SIGTERM
-trap { send_user "\ninterrupted by user\n";    exit 1 } SIGINT
-trap { send_user "\nsigquit\n";                exit 1 } SIGQUIT
+trap { send_user "\ninterrupted by user\n"; exit 130 } SIGINT
+trap { send_user "\nquit\n";                exit 131 } SIGQUIT
+trap { send_user "\nterminated\n";          exit 143 } SIGTERM
 
 #
 # Initialize a few global variables used by all tests.
@@ -55,7 +54,8 @@ set kfail_flag  0		;# indicates that it is a known failure
 set kfail_prms	0		;# bug id for the description of the known failure
 set sum_file	""		;# name of the file that contains the summary log
 set base_dir	""		;# the current working directory
-set xml_file    ""              ;# name of the xml output if requested
+set xml_file_name ""		;# name of the xml output if requested
+set xml_file    ""              ;# handle on the xml file if requested
 set xml         0               ;# flag for requesting xml
 set logname     ""		;# the users login name
 set prms_id	0               ;# GNATS prms id number
@@ -68,8 +68,8 @@ set reboot      0
 set configfile  site.exp	;# (local to this file)
 set multipass   ""		;# list of passes and var settings
 set errno	"";		;#
-set exit_error  0		;# Toggle for whether to set the exit status
-;# on Tcl bugs in test case drivers.
+set exit_error  1		;# Toggle for whether to set the exit status
+				;# on Tcl bugs in test case drivers.
 #
 # These describe the host and target environments.
 #
@@ -132,6 +132,9 @@ if {![info exists tracelevel]} {
 if {![info exists verbose]} {
     set verbose 0
 }
+if {![info exists log_dialog]} {
+    set log_dialog 0
+}
 
 #
 # verbose [-n] [-log] [--] message [level]
@@ -162,8 +165,8 @@ proc verbose { args } {
 		set newline 0
 	    } elseif { [lindex $args $i] == "-log" } {
 		set logfile 1
-            } elseif { [lindex $args $i] == "-x" } {
-                set xml 1
+	    } elseif { [lindex $args $i] == "-x" } {
+		set xml 1
 	    } elseif { [string index [lindex $args $i] 0] == "-" } {
 		clone_output "ERROR: verbose: illegal argument: [lindex $args $i]"
 		return
@@ -184,7 +187,6 @@ proc verbose { args } {
     set message [lindex $args $i]
 
     if { $verbose >= $level } {
-	# There is no need for the "--" argument here, but play it safe.
 	# We assume send_user also sends the text to the log file (which
 	# appears to be the case though the docs aren't clear on this).
 	if { $newline } {
@@ -194,9 +196,9 @@ proc verbose { args } {
 	}
     } elseif { $logfile } {
 	if { $newline } {
-	    send_log "$message\n"
+	    send_log -- "$message\n"
 	} else {
-	    send_log "$message"
+	    send_log -- "$message"
 	}
     }
 }
@@ -291,9 +293,6 @@ proc findfile { args } {
 # If a tcl error occurs while sourcing a file, we print an error message
 # and exit.
 #
-# ??? Perhaps add an optional argument of some descriptive text to add to
-# verbose and error messages (eg: -t "library file" ?).
-#
 proc load_file { args } {
     set i 0
     set only_one 0
@@ -308,10 +307,9 @@ proc load_file { args } {
     set found 0
     foreach file [lrange $args $i end] {
 	verbose "Looking for $file" 2
-        # In Tcl7.5a2, "file exists" can fail if the filename looks
-	# like ~/FILE and the environment variable HOME does not
-	# exist.
-        if {! [catch {file exists $file} result] && $result} {
+	# In Tcl, "file exists" fails if the filename looks like
+	# ~/FILE and the environment variable HOME does not exist.
+	if {! [catch {file exists $file} result] && $result} {
 	    set found 1
 	    verbose "Found $file"
 	    if { [catch "uplevel #0 source $file"] == 1 } {
@@ -373,33 +371,34 @@ proc usage { } {
     global tool
 
     send_user "USAGE: runtest \[options...\]\n"
-    send_user "\t--all (-a)\t\tPrint all test output to screen\n"
-    send_user "\t--build \[string\]\tThe canonical triplet of the build machine\n"
-    send_user "\t--host \[string\]\t\tThe canonical triplet of the host machine\n"
+    send_user "\t--all, -a\t\tPrint all test output to screen\n"
+    send_user "\t--build \[triplet\]\tThe canonical triplet of the build machine\n"
+    send_user "\t--debug\t\t\tSet expect debugging ON\n"
+    send_user "\t--directory name\tRun only the tests in directory 'name'\n"
+    send_user "\t--help\t\t\tPrint help text\n"
+    send_user "\t--host \[triplet\]\tThe canonical triplet of the host machine\n"
     send_user "\t--host_board \[name\]\tThe host board to use\n"
-    send_user "\t--target \[string\]\tThe canonical triplet of the target board\n"
-    send_user "\t--status (-sta)\t\tSet the exit status to fail on Tcl errors\n"
-    send_user "\t--debug (-de)\t\tSet expect debugging ON\n"
-    send_user "\t--help (-he)\t\tPrint help text\n"
-    send_user "\t--mail \[name(s)\]\tWhom to mail the results to\n"
     send_user "\t--ignore \[name(s)\]\tThe names of specific tests to ignore\n"
+    send_user "\t--log_dialog\t\t\Emit Expect output on stdout\n"
+    send_user "\t--mail \[name(s)\]\tWhom to mail the results to\n"
     send_user "\t--objdir \[name\]\t\tThe test suite binary directory\n"
     send_user "\t--outdir \[name\]\t\tThe directory to put logs in\n"
     send_user "\t--reboot \[name\]\t\tReboot the target (if supported)\n"
     send_user "\t--srcdir \[name\]\t\tThe test suite source code directory\n"
+    send_user "\t--status\t\tSet the exit status to fail on Tcl errors\n"
     send_user "\t--strace \[number\]\tSet expect tracing ON\n"
+    send_user "\t--target \[triplet\]\tThe canonical triplet of the target board\n"
     send_user "\t--target_board \[name(s)\] The list of target boards to run tests on\n"
-    send_user "\t--tool\[name(s)\]\t\tRun tests on these tools\n"
+    send_user "\t--tool \[name(s)\]\tRun tests on these tools\n"
     send_user "\t--tool_exec \[name\]\tThe path to the tool executable to test\n"
     send_user "\t--tool_opts \[options\]\tA list of additional options to pass to the tool\n"
-    send_user "\t--directory (-di) name\tRun only the tests in directory 'name'\n"
-    send_user "\t--verbose (-v)\t\tEmit verbose output\n"
-    send_user "\t--version (-V)\t\tEmit all version numbers\n"
-    send_user "\t--xml (-x)\t\tTurn on XML output generation\n"
+    send_user "\t--verbose, -v\t\tProduce verbose output\n"
+    send_user "\t--version, -V\t\tPrint all relevant version numbers\n"
+    send_user "\t--xml\[=name\], -x\tTurn on XML output generation\n"
     send_user "\t--D\[0-1\]\t\tTcl debugger\n"
     send_user "\tscript.exp\[=arg(s)\]\tRun these tests only\n"
     if { [info exists tool] } {
-	if { [info proc ${tool}_option_help] != "" } {
+	if { [info procs ${tool}_option_help] != "" } {
 	    ${tool}_option_help
 	}
     }
@@ -426,11 +425,11 @@ for { set i 0 } { $i < $argc } { incr i } {
 
     # make all options have two hyphens
     switch -glob -- $option {
-        "--*" {
-        }
-        "-*" {
+	"--*" {
+	}
+	"-*" {
 	    set option "-$option"
-        }
+	}
     }
 
     # split out the argument for options that take them
@@ -447,7 +446,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	"--ou*" -
 	"--sr*" -
 	"--str*" -
-        "--ta*" -
+	"--ta*" -
 	"--di*" -
 	"--to*" {
 	    incr i
@@ -460,12 +459,12 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    set arg_build_triplet $optarg
 	    continue
 	}
-	
+
 	"--host_bo*" {
 	    set host_board $optarg
 	    continue
 	}
-	
+
 	"--ho*" {			# (--host) the host configuration
 	    set arg_host_triplet $optarg
 	    continue
@@ -480,7 +479,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    set srcdir $optarg
 	    continue
 	}
-	
+
 	"--target_bo*" {
 	    set target_list $optarg
 	    continue
@@ -501,16 +500,11 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    continue
 	}
 
-	"--tool_ro*" {
-	    set tool_root_dir $optarg
-	    continue
-	}
-
 	"--to*" {			# (--tool) specify tool name
 	    set tool $optarg
 	    set comm_line_tool $optarg
 	    continue
-        }
+	}
 
 	"--di*" {
 	    set cmdline_dir_to_run $optarg
@@ -556,7 +550,7 @@ if {[string match "" $logname]} {
 		# try getting it with who am i
 		unset tmp
 		catch "set logname [exec who am i]" tmp
-		if {[string match "*Command not found*" $tmp]} {	
+		if {[string match "*Command not found*" $tmp]} {
 		    send_user "ERROR: couldn't get the users login name\n"
 		    set logname "Unknown"
 		} else {
@@ -571,8 +565,8 @@ if {[string match "" $logname]} {
 # lookfor_file -- try to find a file by searching up multiple directory levels
 #
 proc lookfor_file { dir name } {
-    foreach x ".. ../.. ../../.. ../../../.." {
-	verbose "$dir/$name" 2
+    foreach x ". .. ../.. ../../.. ../../../.." {
+	verbose "$dir/$x/$name" 2
 	if {[file exists [file join $dir $name]]} {
 	    return [file join $dir $name]
 	}
@@ -586,10 +580,10 @@ proc lookfor_file { dir name } {
 #
 # If there a multiple files with the same name, stop after the first one found.
 # The order is first look in the install dir, then in a parallel dir in the
-# source tree, (up one or two levels), then in the current dir.
+# source tree (up one or two levels), then in the current dir.
 #
 proc load_lib { file } {
-    global verbose libdir srcdir base_dir execpath tool
+    global verbose libdir libdirs srcdir base_dir execpath tool
     global loaded_libs
 
     if {[info exists loaded_libs($file)]} {
@@ -597,8 +591,11 @@ proc load_lib { file } {
     }
 
     set loaded_libs($file) ""
-
-    if { [search_and_load_file "library file" $file [list ../lib $libdir $libdir/lib [file dirname [file dirname $srcdir]]/dejagnu/lib $srcdir/lib $execpath/lib . [file dirname [file dirname [file dirname $srcdir]]]/dejagnu/lib]] == 0 } {
+    set search_dirs [list ../lib $libdir $libdir/lib [file dirname [file dirname $srcdir]]/dejagnu/lib $srcdir/lib $execpath/lib . [file dirname [file dirname [file dirname $srcdir]]]/dejagnu/lib]
+    if {[info exists libdirs]} {
+        lappend search_dirs $libdirs
+    }
+    if { [search_and_load_file "library file" $file $search_dirs ] == 0 } {
 	send_error "ERROR: Couldn't find library file $file.\n"
 	exit 1
     }
@@ -611,17 +608,14 @@ verbose "Login name is $logname"
 # All are sourced in order.
 #
 # Search order:
-#	$HOME/.dejagnurc -> $base_dir/$configfile -> $objdir/$configfile
-#	-> installed -> $DEJAGNU
-#
-# ??? It might be nice to do $HOME last as it would allow it to be the
-# ultimate override.  Though at present there is still $DEJAGNU.
+#	$base_dir/$configfile -> $objdir/$configfile ->
+#	installed -> $DEJAGNU -> $HOME/.dejagnurc
 #
 # For the normal case, we rely on $base_dir/$configfile to set
 # host_triplet and target_triplet.
 #
 
-load_file ~/.dejagnurc $base_dir/$configfile
+load_file $base_dir/$configfile
 
 #
 # If objdir didn't get set in $base_dir/$configfile, set it to $base_dir.
@@ -652,6 +646,8 @@ set libdir   [file dirname $execpath]/dejagnu
 if {[info exists env(DEJAGNULIBS)]} {
     set libdir $env(DEJAGNULIBS)
 }
+# list of extra search directories used by load_lib to look for libs
+set libdirs {}
 
 verbose "Using $libdir to find libraries"
 
@@ -667,12 +663,12 @@ if { $arg_build_triplet != "" } {
     set build_triplet $arg_build_triplet
 }
 
-# if we only specify --host, then that must be the build machne too, and we're
-# stuck using the old functionality of a simple cross test
+# If we only specify --host, then that must be the build machine too,
+# and we're stuck using the old functionality of a simple cross test.
 if {[expr { $build_triplet == ""  &&  $host_triplet != "" } ]} {
     set build_triplet $host_triplet
 }
-# if we only specify --build, then we'll use that as the host too
+# If we only specify --build, then we'll use that as the host too.
 if {[expr { $build_triplet != "" && $host_triplet == "" } ]} {
     set host_triplet $build_triplet
 }
@@ -682,7 +678,7 @@ unset arg_host_triplet arg_build_triplet
 # If the build machine type hasn't been specified by now, use config.guess.
 #
 
-if {[expr  { $build_triplet == ""  &&  $host_triplet == ""} ]} {
+if {[expr {$build_triplet == "" && $host_triplet == ""}]} {
     # find config.guess
     foreach dir "$libdir $libdir/libexec $libdir/.. $execpath $srcdir $srcdir/.. $srcdir/../.." {
 	verbose "Looking for ${dir}/config.guess" 2
@@ -699,7 +695,7 @@ if {[expr  { $build_triplet == ""  &&  $host_triplet == ""} ]} {
 	exit 1
     }
     catch "exec $config_guess" build_triplet
-    switch $build_triplet {
+    switch -- $build_triplet {
 	"No uname command or uname output not recognized" -
 	"Unable to guess system type" {
 	    verbose "WARNING: Uname output not recognized"
@@ -710,7 +706,6 @@ if {[expr  { $build_triplet == ""  &&  $host_triplet == ""} ]} {
     if { $host_triplet == "" } {
 	set host_triplet $build_triplet
     }
-
 }
 
 #
@@ -826,7 +821,7 @@ proc setup_host_hook { name } {
     unset board
     unset board_type
     push_host $name
-    if { [info proc ${name}_init] != "" } {
+    if { [info procs ${name}_init] != "" } {
 	${name}_init $name
     }
 }
@@ -843,7 +838,7 @@ proc setup_build_hook { name } {
     unset board
     unset board_type
     push_build $name
-    if { [info proc ${name}_init] != "" } {
+    if { [info procs ${name}_init] != "" } {
 	${name}_init $name
     }
 }
@@ -875,6 +870,9 @@ if {[info exists env(DEJAGNU)]} {
 	set boards_dir "[file dirname $env(DEJAGNU)]/boards"
     }
 }
+
+# Load user .dejagnurc file last as the ultimate override.
+load_file ~/.dejagnurc
 
 if {![info exists boards_dir]} {
     set boards_dir ""
@@ -984,11 +982,11 @@ for { set i 0 } { $i < $argc } { incr i } {
 
     # make all options have two hyphens
     switch -glob -- $option {
-        "--*" {
-        }
-        "-*" {
+	"--*" {
+	}
+	"-*" {
 	    set option "-$option"
-        }
+	}
     }
 
     # split out the argument for options that take them
@@ -1005,7 +1003,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	"--ou*" -
 	"--sr*" -
 	"--str*" -
-        "--ta*" -
+	"--ta*" -
 	"--di*" -
 	"--to*" {
 	    incr i
@@ -1016,10 +1014,10 @@ for { set i 0 } { $i < $argc } { incr i } {
     switch -glob -- $option {
 	"--V*" -
 	"--vers*" {			# (--version) version numbers
-	    send_user "Expect version is\t[exp_version]\n"
-	    send_user "Tcl version is\t\t[ info tclversion ]\n"
-	    send_user "Framework version is\t$frame_version\n"
-	    exit
+	    send_user "DejaGnu version\t$frame_version\n"
+	    send_user "Expect version\t[exp_version]\n"
+	    send_user "Tcl version\t[ info tclversion ]\n"
+	    exit 0
 	}
 
 	"--v*" {			# (--verbose) verbose output
@@ -1031,7 +1029,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    # Already parsed (and don't set again).  Let $DEJAGNU rename it.
 	    continue
 	}
-	
+
 	"--ho*" {			# (--host) the host configuration
 	    # Already parsed (and don't set again).  Let $DEJAGNU rename it.
 	    continue
@@ -1042,7 +1040,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    set target_list $optarg
 	    continue
 	}
-	
+
 	"--ta*" {			# (--target) the target configuration
 	    # Already parsed (and don't set again).  Let $DEJAGNU rename it.
 	    continue
@@ -1053,17 +1051,16 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    verbose "Print all test output to screen"
 	    continue
 	}
-	
+
 	"--di*" {
 	    # Already parsed (and don't set again).  Let $DEJAGNU rename it.
-	    # set cmdline_dir_to_run $optarg
 	    continue
 	}
 
-	
+
 	"--de*" {			# (--debug) expect internal debugging
 	    if {[file exists ./dbg.log]} {
-		catch "exec rm -f ./dbg.log"
+		catch [file delete -force -- dbg.log]
 	    }
 	    if { $verbose > 2 } {
 		exp_internal -f dbg.log 1
@@ -1073,25 +1070,27 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    verbose "Expect Debugging is ON"
 	    continue
 	}
-	
+
 	"--D[01]" {			# (-Debug) turn on Tcl debugger
+	    # The runtest shell script handles this option, but it
+	    # still appears in the options in the Tcl code.
 	    verbose "Tcl debugger is ON"
 	    continue
 	}
-	
+
 	"--m*" {			# (--mail) mail the output
 	    set mailing_list $optarg
-            set mail_logs 1
+	    set mail_logs 1
 	    verbose "Mail results to $mailing_list"
 	    continue
 	}
-	
+
 	"--r*" {			# (--reboot) reboot the target
 	    set reboot 1
 	    verbose "Will reboot the target (if supported)"
 	    continue
 	}
-	
+
 	"--ob*" {			# (--objdir) where the test case object code lives
 	    # Already parsed, but parse again to make sure command line
 	    # options override any config file.
@@ -1099,13 +1098,18 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    verbose "Using test binaries in $objdir"
 	    continue
 	}
-	
+
 	"--ou*" {			# (--outdir) where to put the output files
 	    set outdir $optarg
 	    verbose "Test output put in $outdir"
 	    continue
 	}
-	
+
+	"--log_dialog*" {
+	    incr log_dialog
+	    continue
+	}
+
 	"*.exp" {			#  specify test names to run
 	    set all_runtests($option) ""
 	    verbose "Running only tests $option"
@@ -1119,7 +1123,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    unset tmp
 	    continue
 	}
-	
+
 	"--ig*" {			#  (--ignore) specify test names to exclude
 	    set ignoretests $optarg
 	    verbose "Ignoring test $ignoretests"
@@ -1133,20 +1137,19 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    set srcdir $optarg
 	    continue
 	}
-	
+
 	"--str*" {			# (--strace) expect trace level
 	    set tracelevel $optarg
 	    strace $tracelevel
 	    verbose "Source Trace level is now $tracelevel"
 	    continue
 	}
-	
+
 	"--sta*" {			# (--status) exit status flag
-	    set exit_error 1
-	    verbose "Tcl errors will set an ERROR exit status"
+	    # preserved for compatability, do nothing
 	    continue
 	}
-	
+
 	"--tool_opt*" {
 	    continue
 	}
@@ -1156,26 +1159,22 @@ for { set i 0 } { $i < $argc } { incr i } {
 	    continue
 	}
 
-	"--tool_ro*" {
-	    set tool_root_dir $optarg
-	    continue
-	}
-
 	"--to*" {			# (--tool) specify tool name
 	    set tool $optarg
 	    verbose "Testing $tool"
 	    continue
-        }
+	}
 
-        "--x*" {
-            set xml 1
-            verbose "XML logging turned on"
-            continue
+	"--x*" {
+	    set xml_file_name $optarg
+	    set xml 1
+	    verbose "XML logging turned on"
+	    continue
 	}
 
 	"--he*" {			# (--help) help text
 	    usage
-	    exit 0	
+	    exit 0
 	}
 
 	"[A-Z0-9_-.]*=*" { # skip makefile style args like CC=gcc, etc... (processed in first pass)
@@ -1184,7 +1183,7 @@ for { set i 0 } { $i < $argc } { incr i } {
 
 	default {
 	    if {[info exists tool]} {
-		if { [info proc ${tool}_option_proc] != "" } {
+		if { [info procs ${tool}_option_proc] != "" } {
 		    if {[${tool}_option_proc $option]} {
 			continue
 		    }
@@ -1208,7 +1207,7 @@ if {![info exists tool]} {
 #
 # initialize a few Tcl variables to something other than their default
 #
-if { $verbose > 2 } {
+if { $verbose > 2 || $log_dialog } {
     log_user 1
 } else {
     log_user 0
@@ -1224,7 +1223,7 @@ set timeout 10
 open_logs
 
 # print the config info
-clone_output "Test Run By $logname on [timestamp -format %c]"
+clone_output "Test run by $logname on [timestamp -format %c]"
 if {[is3way]} {
     clone_output "Target is $target_triplet"
     clone_output "Host   is $host_triplet"
@@ -1457,12 +1456,12 @@ proc runtest { test_file_name } {
 	}
 
 	if { [catch "uplevel #0 source $test_file_name"] == 1 } {
-	    # If we have a Tcl error, propogate the exit status do make
-	    # notices the error.
+	    # If we have a Tcl error, propagate the exit status so
+	    # that 'make' (if it invokes runtest) notices the error.
 	    global exit_status exit_error
-	    # exit error is set by a command line option
+	    # exit error is set by the --status command line option
 	    if { $exit_status == 0 } {
-		set exit_status $exit_error
+		set exit_status 2
 	    }
 	    # We can't call `perror' here, it resets `errorInfo'
 	    # before we want to look at it.  Also remember that perror
@@ -1486,27 +1485,21 @@ proc runtest { test_file_name } {
     } else {
 	# This should never happen, but maybe if the file got removed
 	# between the `find' above and here.
-	perror "$test_file_name does not exist."
-	# ??? This is a hack.  We want to send a message to stderr and
-	# to the summary file (just like perror does), but we don't
-	# want the next testcase to get a spurious "unresolved" because
-	# errcnt != 0.  Calling `clone_output' is also supposed to be a
-	# no-no (see the comments for clone_output).
-	set errcnt 0
+	perror "$test_file_name does not exist." 0
     }
 }
 
-#
 # Trap some signals so we know what's happening.  These replace the previous
 # ones because we've now loaded the library stuff.
 #
 if {![exp_debug]} {
-    foreach sig "{SIGTERM {terminated}} \
-             {SIGINT  {interrupted by user}} \
-             {SIGQUIT {interrupted by user}}" {
+    foreach sig {{SIGINT {interrupted by user} 130} \
+		     {SIGQUIT {interrupted by user} 131} \
+		     {SIGTERM {terminated} 143}} {
 	set signal [lindex $sig 0]
 	set str [lindex $sig 1]
-	trap "send_error \"got a \[trap -name\] signal, $str \\n\"; log_and_exit;" $signal
+	set code [lindex $sig 2]
+	trap "send_error \"got a \[trap -name\] signal, $str \\n\"; set exit_status $code; log_and_exit;" $signal
 	verbose "setting trap for $signal to $str" 1
     }
     unset signal str sig
@@ -1663,7 +1656,7 @@ foreach current_target $target_list {
 	    foreach multipass_elem $multipass {
 		set multipass_name [lindex $multipass_elem 0]
 		if {$p == $multipass_name} {
-	    	    lappend passes $multipass_elem
+		    lappend passes $multipass_elem
 		    break
 		}
 	    }
@@ -1691,7 +1684,6 @@ foreach current_target $target_list {
 		lappend restore "$var"
 	    }
 	    # Handle "CFLAGS=$CFLAGS foo".
-	    # FIXME: Do we need to `catch' this?
 	    eval set $var \[string range \"$varval\" [expr {$tmp + 1}] end\]
 	    verbose "$var is now [eval concat \$$var]"
 	    unset tmp var
@@ -1737,9 +1729,9 @@ foreach current_target $target_list {
 	    foreach dir "${test_top_dirs}" {
 		if { [string length ${prev_dir}] == 0 ||
 		     [string first "${prev_dir}/" ${dir}] == -1} {
-	            # the first top dir entry, or an entry that
+		    # the first top dir entry, or an entry that
 		    # does not share the previous entry's entire
-	            # pathname, record it as a valid top dir entry.
+		    # pathname, record it as a valid top dir entry.
 		    #
 		    lappend temp_top_dirs ${dir}
 		    set prev_dir ${dir}
@@ -1749,7 +1741,7 @@ foreach current_target $target_list {
 	}
 	verbose "Top level testsuite dirs are ${test_top_dirs}" 2
 	set testlist ""
-	if {[info exists all_runtests]} {
+	if {[array exists all_runtests]} {
 	    foreach x [array names all_runtests] {
 		verbose "trying to glob ${srcdir}/${x}" 2
 		set s [glob -nocomplain ${srcdir}/$x]
@@ -1835,7 +1827,7 @@ foreach current_target $target_list {
 			# list of directories.  Look for match on each item.
 			set found 0
 			foreach directory $cmdline_dir_to_run {
-			    if {[string match "*${directory}*" $dir]} {
+			    if {[string match $directory $dir]} {
 				set found 1
 				break
 			    }
@@ -1875,8 +1867,8 @@ foreach current_target $target_list {
 			# Check to see if the range of tests is limited,
 			# set `runtests' to a list of two elements: the script name
 			# and any arguments ("" if none).
-			if {[info exists all_runtests]} {
-			    verbose "searching for $test_name in [array names all_runtests]"
+			if {[array exists all_runtests]} {
+			    verbose "searching for $test_name in [array names all_runtests]" 2
 			    if { 0 > [lsearch [array names all_runtests] [file tail $test_name]]} {
 				if { 0 > [lsearch [array names all_runtests] $test_name] } {
 				    continue
@@ -1897,7 +1889,7 @@ foreach current_target $target_list {
 		    set [lindex $varval 0] [lindex $varval 1]
 		} else {
 		    verbose "Restoring [lindex $varval 0] to `unset'" 4
-		    unset [lindex $varval 0]
+		    unset -- [lindex $varval 0]
 		}
 	    }
 	}
