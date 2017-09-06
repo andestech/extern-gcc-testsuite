@@ -21,9 +21,21 @@ def find_prog(prog):
                 return p
         return None
 
+def gen_makefile(makefile_in, makefile_out, replace_vars):
+    with open(makefile_in, 'r') as file :
+        filedata = file.read()
+
+    # Replace the target string
+    for key, val in replace_vars.iteritems():
+        filedata = filedata.replace('@%s@' % key, val)
+
+    # Write the file out again
+    with open(makefile_out, 'w') as file:
+        file.write(filedata)
+
 def gen_site_exp(target, target_cc, target_cxx, target_sim,
                  host, host_cc, test_dir, test_source_dir,
-                 extra_clags, is_clang):
+                 extra_clags, is_clang, exp):
 
     if is_clang:
         extra_clags = \
@@ -81,4 +93,4 @@ def gen_site_exp(target, target_cc, target_cxx, target_sim,
          for config_name, config in site_config.iteritems():
            exp.write("set %s \"%s\"\n" % (config_name, config))
 
-    gen_site_exp("test.exp")
+    gen_site_exp(exp)
