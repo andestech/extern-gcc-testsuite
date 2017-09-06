@@ -28,14 +28,14 @@ for lang in langs:
         for file in files:
             if file.endswith(".exp"):
                 exps.add(file)
-    print "do-%s-test: %s\n" % (lang, " ".join(map(lambda a: "%s/%s.log" % (a, lang), exps)))
-    print "\t-cd %s && ../dg-extract-results.sh -L *.exp/%s.log > %s.log" % (lang, lang, lang)
-    print "\t-cd %s && ../dg-extract-results.sh *.exp/%s.sum > %s.sum" % (lang, lang, lang)
+    print "do-%s-test: %s\n" % (lang, " ".join(map(lambda a: "%s/%s/%s.log" % (lang, a, lang), exps)))
+    print "\t-cd %s && $(SRC)/dg-extract-results.sh -L *.exp/%s.log > %s.log" % (lang, lang, lang)
+    print "\t-cd %s && $(SRC)/dg-extract-results.sh *.exp/%s.sum > %s.sum" % (lang, lang, lang)
 
     for exp in exps:
-        print "%s: %s/%s.log" % (exp, exp, lang)
+        print "%s: %s/%s/%s.log" % (exp, lang, exp, lang)
         print ""
-        print "%s/%s.log: site.exp" % (exp, lang)
+        print "%s/%s/%s.log: site.exp" % (lang, exp, lang)
         print "\tmkdir -p %s/%s" % (lang, exp)
         print "\tln -s ../../site.exp %s/%s/site.exp" % (lang, exp)
         print "\t-cd %s/%s && runtest --tool %s $(RUNTESTFLAGS) %s" % (lang, exp, lang, exp)
