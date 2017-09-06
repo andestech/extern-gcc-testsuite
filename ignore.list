@@ -654,6 +654,7 @@ gcc.dg/noncompile/undeclared-1.c
 gcc.dg/noncompile/undeclared-2.c
 gcc.dg/noncompile/va-arg-1.c
 gcc.dg/noncompile/voidparam-1.c
+gcc.dg/march.c
 
 # Test for spec
 gcc.dg/spec-options.c
