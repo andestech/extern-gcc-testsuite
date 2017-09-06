@@ -1,5 +1,13 @@
 #! /usr/bin/env python2
 import re
+import sys
+
+def usage():
+    print "%s <filter-file>" % sys.argv[0]
+
+if len(sys.argv) != 2:
+    usage()
+    sys.exit(1)
 
 def read_ignore_list(ignore_list_path):
    with open(ignore_list_path, "r") as ignore_list_f:
@@ -52,7 +60,7 @@ def read(sum_path, log_path):
                              and " scan-ipa-dump" not in s,sum_data)
 
 
-  ignore_list = read_ignore_list("ignore.list")
+  ignore_list = read_ignore_list(sys.argv[1])
   def filter_ignore(s):
     for ignore in ignore_list:
       if ignore in s:
