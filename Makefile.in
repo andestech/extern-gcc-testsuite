@@ -31,7 +31,7 @@ all: clean site.exp
 	cd gcc && runtest --tool gcc $(RUNTESTFLAGS)
 
 filter:
-	$(SRC)/filter.py
+	$(SRC)/filter.py $(SRC)/ignore.list
 
 single-test:
 	runtest --tool gcc $(RUNTESTFLAGS) $(EXP)="$(TEST)"
