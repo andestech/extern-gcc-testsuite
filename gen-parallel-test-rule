@@ -37,7 +37,7 @@ for lang in langs:
         print ""
         print "%s/%s/%s.log: site.exp" % (lang, exp, lang)
         print "\tmkdir -p %s/%s" % (lang, exp)
-        print "\tln -s ../../site.exp %s/%s/site.exp" % (lang, exp)
+        print "\tln -s -f ../../site.exp %s/%s/site.exp" % (lang, exp)
         print "\t-cd %s/%s && runtest --tool %s $(RUNTESTFLAGS) %s" % (lang, exp, lang, exp)
 
 print "do-parallel-test: %s" % " ".join(map(lambda a: "do-%s-test" % a, langs))
